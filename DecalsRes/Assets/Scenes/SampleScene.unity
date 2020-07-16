@@ -6122,9 +6122,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p3DHit: {fileID: 1858618586}
   p3DPaint: {fileID: 1858618583}
+  p3DPaintableTexture: {fileID: 1485350987803779160}
   decalRotator: {fileID: 1858618585}
   decalScaler: {fileID: 1858618584}
   decalMover: {fileID: 1858618587}
+  shots: []
+  oldLayer: 0
+  newLayer: 0
   isMoving: 0
   isRotatingAndScaling: 0
 --- !u!1 &774161695
@@ -17606,7 +17610,7 @@ MonoBehaviour:
   layers:
     serializedVersion: 2
     m_Bits: 4294967295
-  orientation: 1
+  orientation: 0
   _camera: {fileID: 0}
   normal: 1
   offset: 0
@@ -22678,7 +22682,7 @@ MonoBehaviour:
   coord: 0
   group:
     index: 0
-  undoRedo: 1
+  undoRedo: 2
   stateLimit: 10
   saveLoad: 0
   saveName: 
@@ -22998,7 +23002,7 @@ MonoBehaviour:
   coord: 0
   group:
     index: 0
-  undoRedo: 1
+  undoRedo: 2
   stateLimit: 10
   saveLoad: 0
   saveName: 

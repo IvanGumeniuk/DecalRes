@@ -124,12 +124,6 @@ namespace PaintIn3D
 			}
 		}
 
-		public void MakeShot()
-		{
-			SubmitHit(false);
-			P3dStateManager.StoreAllStates();
-		}
-
 		protected virtual void LateUpdate()
 		{
 			UpdatePointAndLine();
@@ -140,6 +134,65 @@ namespace PaintIn3D
 			if (preview == false && paintIn == PhaseType.FixedUpdate)
 			{
 				UpdateHit();
+			}
+		}
+
+		public void MakeShot()
+		{
+			SubmitHit(false);
+			P3dStateManager.StoreAllStates();
+		}
+
+		public void MakeShot(Vector3 pointA, Vector3 pointB)
+		{
+			SubmitHit(false, pointA, pointB);
+			P3dStateManager.StoreAllStates();
+		}
+
+		private void SubmitHit(bool preview, Vector3 pointA, Vector3 pointB)
+		{
+			if (pointA != Vector3.zero && pointB != Vector3.zero)
+			{
+				var vector = pointB - pointA;
+				var maxDistance = vector.magnitude;
+				var ray = new Ray(pointA, vector);
+
+				if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, layers) == true)
+				{
+					var finalUp = orientation == OrientationType.CameraUp ? P3dHelper.GetCameraUp(_camera) : Vector3.up;
+					var finalPosition = hit.point + hit.normal * offset;
+					var finalNormal = normal == NormalType.HitNormal ? hit.normal : -ray.direction;
+					var finalRotation = Quaternion.LookRotation(-finalNormal, finalUp);
+
+					switch (draw)
+					{
+						case DrawType.PointsIn3D:
+							{
+								SubmitPoint(preview, priority, pressure, finalPosition, finalRotation, this);
+							}
+							break;
+
+						case DrawType.PointsOnUV:
+							{
+								hitCache.InvokeCoord(gameObject, preview, priority, pressure, new P3dHit(hit), finalRotation);
+							}
+							break;
+
+						case DrawType.TrianglesIn3D:
+							{
+								hitCache.InvokeTriangle(gameObject, preview, priority, pressure, hit, finalRotation);
+							}
+							break;
+					}
+
+					fraction = (hit.distance + offset) / maxDistance;
+				}
+				else
+				{
+					BreakHits(this);
+
+					fraction = 1.0f;
+				}
 			}
 		}
 

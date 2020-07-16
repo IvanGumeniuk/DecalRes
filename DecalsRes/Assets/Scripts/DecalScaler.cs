@@ -25,11 +25,16 @@ public class DecalScaler : MonoBehaviour
 		currentScale = startScale;
 	}
 
-	public void Scale(float scale)
+	public void AddScale(float scale)
 	{
 		currentScale = startScale + scale * scaleSpeed;
 		currentScale = Mathf.Clamp(currentScale, scaleClamp.x, scaleClamp.y);
 		decal.Scale = defaultScale * currentScale;
+	}
+
+	public void SetScale(float scale)
+	{
+		decal.Scale = defaultScale * scale;
 	}
 
 	public void RevertToDefault()

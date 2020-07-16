@@ -26,10 +26,16 @@ public class DecalRotator : MonoBehaviour
 		currentAngle = startAngle;
 	}
 
-	public void Rotate(float angle)
+	public void AddRotationAngle(float angle)
 	{
 		currentAngle = startAngle + angle * rotationSpeed;
 		decal.Angle =  Mathf.Clamp(currentAngle, angleClamp.x, angleClamp.y);
+	}
+
+	public void SetAngle(float angle)
+	{
+		float currentAngle = defaultAngle + angle;
+		decal.Angle = Mathf.Clamp(currentAngle, angleClamp.x, angleClamp.y);
 	}
 
 	public void RevertToDefault()
