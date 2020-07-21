@@ -140,13 +140,13 @@ namespace PaintIn3D
 		public void MakeShot()
 		{
 			SubmitHit(false);
-			P3dStateManager.StoreAllStates();
+			//P3dStateManager.StoreAllStates();
 		}
 
 		public void MakeShot(Vector3 pointA, Vector3 pointB)
 		{
 			SubmitHit(false, pointA, pointB);
-			P3dStateManager.StoreAllStates();
+			//P3dStateManager.StoreAllStates();
 		}
 
 		private void SubmitHit(bool preview, Vector3 pointA, Vector3 pointB)

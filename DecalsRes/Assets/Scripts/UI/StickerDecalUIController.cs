@@ -1,10 +1,13 @@
 ﻿using PaintIn3D;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StickerDecalUIController : MonoBehaviour
 {
+	public Action<Sprite> OnStickerClicked;
+
 	public GameObject stickerSubcategoryObject;
 	public GameObject customizationManipulatorView;
 
@@ -27,16 +30,7 @@ public class StickerDecalUIController : MonoBehaviour
 
 	private void Update()
 	{
-		if (!stickerSubcategoryObject.activeSelf)
-		{
-			if(customizationManipulatorView.activeSelf)
-				customizationManipulatorView.SetActive(false);
-		}
-		else
-		{
-			if (!customizationManipulatorView.activeSelf)
-				customizationManipulatorView.SetActive(true);
-		}
+		customizationManipulatorView.SetActive(stickerSubcategoryObject.activeSelf);
 	}
 
 
@@ -54,6 +48,7 @@ public class StickerDecalUIController : MonoBehaviour
 		if (IsAnyButtonEnabled)
 		{
 			stickerDecal.gameObject.SetActive(true);
+			OnStickerClicked?.Invoke(stickerButtons[stickerIndex].GetComponent<Image>().sprite);
 		}
 	}
 

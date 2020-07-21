@@ -2,4 +2,5 @@
 {
     public CustomizationViewUIController customizationViewUIController;
     public CustomizationManipulatorViewUIController manipulatorViewUIController;
+    public DecalLayersUIController decalLayers;
 }
