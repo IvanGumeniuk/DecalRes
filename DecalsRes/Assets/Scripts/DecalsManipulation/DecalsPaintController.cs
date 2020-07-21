@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DecalsPaintController : MonoBehaviour
 {
+    [SerializeField] private Transform decalsHolder;
+    [SerializeField] private List<DecalManipulationController> decalPainters = new List<DecalManipulationController>();
+
     // Start is called before the first frame update
     void Start()
     {

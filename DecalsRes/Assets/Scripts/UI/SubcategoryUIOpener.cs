@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class SubcategoryUIOpener : MonoBehaviour
 {
-	public List<GameObject> views = new List<GameObject>();
+	public List<SubcategoryUIView> views = new List<SubcategoryUIView>();
 
 	public void OnClick(int buttonIndex)
 	{
-		if(buttonIndex >= 0 && buttonIndex < views.Count)
+
+		if (buttonIndex >= 0)
 		{
-			IngameUIManager.Instance.customizationViewUIController.OpenView(views[buttonIndex]);
+			SubviewType subview = (SubviewType)buttonIndex;
+			var view = views.Find(x => x.type == subview).gameObject;
+			IngameUIManager.Instance.customizationViewUIController.OpenView(view, subview);
 		}
-	}
+	}	
 }

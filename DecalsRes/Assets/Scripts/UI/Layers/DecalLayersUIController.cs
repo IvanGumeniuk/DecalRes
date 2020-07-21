@@ -60,10 +60,10 @@ public class DecalLayersUIController : MonoBehaviour
             if (layerItems[i] == item)
                 continue;
 
-            bool mustBeOnLeft = item.ElementWorldCenter.x <= layerItems[i].ElementWorldCenter.x && item.priority > layerItems[i].priority;
-            bool mustBeOnRight = item.ElementWorldCenter.x >= layerItems[i].ElementWorldCenter.x && item.priority < layerItems[i].priority;
+            bool mustBeOnBottom = item.ElementWorldCenter.y <= layerItems[i].ElementWorldCenter.y && item.priority < layerItems[i].priority;
+            bool mustBeOnTop = item.ElementWorldCenter.y >= layerItems[i].ElementWorldCenter.y && item.priority > layerItems[i].priority;
 
-            if (mustBeOnLeft || mustBeOnRight)
+            if (mustBeOnBottom || mustBeOnTop)
 			{
                 int temp = item.priority;
                 item.priority = layerItems[i].priority;
@@ -73,9 +73,6 @@ public class DecalLayersUIController : MonoBehaviour
 
         for (int i = 0; i < layerItems.Count; i++)
 		{
-            if (layerItems[i] == item)
-                continue;
-
             layerItems[i].transform.SetSiblingIndex(layerItems[i].priority);
         }
     }

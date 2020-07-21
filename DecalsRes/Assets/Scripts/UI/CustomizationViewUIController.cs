@@ -9,6 +9,7 @@ public class CustomizationViewUIController : MonoBehaviour
     public Button customizatonButton;
 
 	public List<GameObject> openedViews = new List<GameObject>();
+	public List<SubviewType> openedViewTypes = new List<SubviewType>();
 
 	public GameObject categoryUI;
 	public StickerDecalUIController stickerDecalUIController;
@@ -28,17 +29,29 @@ public class CustomizationViewUIController : MonoBehaviour
 	private void OnCustomizationButtonPressed()
 	{
 		OpenView(categoryUI);
-		customizatonButton.gameObject.SetActive(false);
+		IngameUIManager.Instance.decalLayers.gameObject.SetActive(true);
+		customizatonButton.interactable = false;
+		backButton.gameObject.SetActive(true);
 	}
 
-	public void OpenView(GameObject view)
+	public void OpenView(GameObject view, SubviewType subviewType = SubviewType.None)
 	{
 		if (openedViews.Count > 0)
 		{
-			openedViews[openedViews.Count - 1].SetActive(false);
+			SubviewType previousView = openedViewTypes[openedViews.Count - 1];
+
+			if (previousView == SubviewType.Stickers || previousView == SubviewType.CustomPainting)
+			{
+				openedViews[openedViews.Count - 1].SetActive(false);
+
+				openedViews.RemoveAt(openedViews.Count - 1);
+				openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
+			}
 		}
 
 		openedViews.Add(view);
+		openedViewTypes.Add(subviewType);
+
 		openedViews[openedViews.Count - 1].SetActive(true);
 	}
 
@@ -48,11 +61,16 @@ public class CustomizationViewUIController : MonoBehaviour
 		{
 			openedViews[openedViews.Count - 1].SetActive(false);
 			openedViews.RemoveAt(openedViews.Count - 1);
+			openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
 
 			if (openedViews.Count > 0)
 				openedViews[openedViews.Count - 1].SetActive(true);
 			else
-				customizatonButton.gameObject.SetActive(true);
+			{
+				customizatonButton.interactable = true;
+				IngameUIManager.Instance.decalLayers.gameObject.SetActive(false);
+				backButton.gameObject.SetActive(false);
+			}
 		}
 	}
 }
