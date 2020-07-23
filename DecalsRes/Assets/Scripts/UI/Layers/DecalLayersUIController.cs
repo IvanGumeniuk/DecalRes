@@ -6,23 +6,28 @@ using UnityEngine;
 public class DecalLayersUIController : MonoBehaviour
 {
     public Action<int> OnLayerItemRemoved;              // int - item`s ID 
+    public Action<int> OnLayerItemSelected;              // int - item`s ID 
+    public Action<Dictionary<int, int>> OnLayerItemsPrioritiesChanged;              // int - item`s ID 
 
     [SerializeField] private List<DecalLayerItem> layerItems = new List<DecalLayerItem>();
     [SerializeField] private RectTransform layerItemsHolder;
     [SerializeField] private DecalLayerItem itemPrefab;
 
     private Sprite newItemSprite;
+    private int newItemID;
 
     private void Start()
     {
         IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerClicked += OnStickerClicked;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting += OnConfirmDecalCreating;
+        IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging += OnConfirmDecalChanging;
     }
 
     private void OnDestroy()
     {
         IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerClicked -= OnStickerClicked;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting -= OnConfirmDecalCreating;
+        IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging -= OnConfirmDecalChanging;
     }
 
     private void OnConfirmDecalCreating(bool confirm)
@@ -32,12 +37,19 @@ public class DecalLayersUIController : MonoBehaviour
 
         DecalLayerItem item = Instantiate(itemPrefab, layerItemsHolder);
         layerItems.Add(item);
-        item.Initialize(this, layerItemsHolder, layerItems.Count - 1, newItemSprite);
+        item.Initialize(this, layerItemsHolder, newItemID, newItemSprite);
     }
 
-	private void OnStickerClicked(Sprite sprite)
+    private void OnConfirmDecalChanging(bool confirm)
+    {
+        DeselectItems();
+    }
+
+
+    private void OnStickerClicked(Sprite sprite, int id)
 	{
-        newItemSprite = sprite;   
+        newItemSprite = sprite;
+        newItemID = id;
     }
 
     public void OnBeginDrag(DecalLayerItem item)
@@ -52,6 +64,24 @@ public class DecalLayersUIController : MonoBehaviour
 
         Destroy(item.gameObject);
 	}
+
+    public void OnItemSelected(DecalLayerItem item)
+	{
+        DeselectItems();
+
+        item.Selected = true;
+        OnLayerItemSelected?.Invoke(item.id);
+    }
+
+    public void DeselectItems()
+	{
+        foreach (var layerItem in layerItems)
+        {
+            layerItem.Selected = false;   
+        }
+
+        OnLayerItemSelected?.Invoke(-1);
+    }
 
     public void OnItemDrag(DecalLayerItem item)
 	{
@@ -71,9 +101,14 @@ public class DecalLayersUIController : MonoBehaviour
             }
         }
 
+        Dictionary<int, int> priorities = new Dictionary<int, int>();
+
         for (int i = 0; i < layerItems.Count; i++)
 		{
             layerItems[i].transform.SetSiblingIndex(layerItems[i].priority);
+            priorities.Add(layerItems[i].id, layerItems[i].priority);
         }
+
+        OnLayerItemsPrioritiesChanged?.Invoke(priorities);
     }
 }

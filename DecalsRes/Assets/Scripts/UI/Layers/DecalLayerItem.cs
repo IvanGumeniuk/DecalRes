@@ -7,11 +7,26 @@ public class DecalLayerItem : MonoBehaviour
     public int priority;
 	public RectTransform rectTransform;
 	public RectTransform content;
+	public RectTransform selectionOutline;
 	public Image image;
 
 	[SerializeField] private Button closeButton;
 
 	[SerializeField] private DecalLayersUIController layersUIController;
+
+	private bool selected;
+	public bool Selected 
+	{
+		get
+		{
+			return selected;
+		}
+		set
+		{
+			selected = value;
+			selectionOutline.gameObject.SetActive(selected);
+		}
+	}
 
 	public Vector2 ElementWorldCenter
 	{
@@ -80,6 +95,11 @@ public class DecalLayerItem : MonoBehaviour
 	public void OnRemoveClick()
 	{
 		layersUIController.OnRemoveItem(this);
+	}
+
+	public void OnPointerClick()
+	{
+		layersUIController.OnItemSelected(this);
 	}
 
 	void ClampInArea(RectTransform element, RectTransform area)

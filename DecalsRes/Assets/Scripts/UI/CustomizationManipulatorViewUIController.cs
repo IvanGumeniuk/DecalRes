@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class CustomizationManipulatorViewUIController : MonoBehaviour
 {
     public event Action<bool> OnConfirmDecalPainting;
+    public event Action<bool> OnConfirmDecalChanging;
     public event Action OnStartMoving;
     public event Action OnFinishMoving;
     public event Action OnStartRotationAndScaling;
@@ -24,55 +25,49 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
     public void OnConfirmButtonClick()
 	{
-        if (!StickerIsAvailable)
+        if (StickerIsAvailable)
+        {
+            IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DisableAllButtons();
+            OnConfirmDecalPainting?.Invoke(true);
             return;
+        }
 
-        OnConfirmDecalPainting?.Invoke(true);
+        OnConfirmDecalChanging?.Invoke(true);
     }
 
     public void OnCancelButtonClick()
-	{
-        if (!StickerIsAvailable)
+    {
+        if (StickerIsAvailable)
+        {
+            OnConfirmDecalPainting?.Invoke(false);
             return;
-
-        OnConfirmDecalPainting?.Invoke(false);
+        }
+        OnConfirmDecalChanging?.Invoke(false);
     }
 
     public void OnMoveButtonPointerDown()
     {
-        if (!StickerIsAvailable)
-            return;
-
         startPosition = Input.mousePosition;
         difference = Vector3.zero;
 
-        OnStartMoving.Invoke();
+        OnStartMoving?.Invoke();
     }
 
     public void OnMoveButtonDrag()
     {
-        if (!StickerIsAvailable)
-            return;
-
         difference = Input.mousePosition - startPosition;
     }
 
     public void OnMoveButtonPointerUp()
     {
-        if (!StickerIsAvailable)
-            return;
-
         startPosition = Vector3.zero;
         difference = Vector3.zero;
 
-        OnFinishMoving.Invoke();
+        OnFinishMoving?.Invoke();
     }
 
     public void OnSizeButtonPointerDown()
     {
-        if (!StickerIsAvailable)
-            return;
-
         startPosition = Input.mousePosition;
         difference = Vector3.zero;
 
@@ -81,17 +76,11 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
     public void OnSizeButtonDrag()
     {
-        if (!StickerIsAvailable)
-            return;
-
         difference = Input.mousePosition - startPosition;
     }
 
     public void OnSizeButtonPointerUp()
     {
-        if (!StickerIsAvailable)
-            return;
-
         startPosition = Vector3.zero;
         difference = Vector3.zero;
 

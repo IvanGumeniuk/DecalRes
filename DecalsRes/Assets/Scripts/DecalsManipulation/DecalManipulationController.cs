@@ -14,29 +14,29 @@ public class DecalManipulationController : MonoBehaviour
     public DecalScaler decalScaler;
 	public DecalMover decalMover;
 
-    private CustomizationManipulatorViewUIController manipulatorUIController;
+	public void SetID(int id)
+	{
+		this.id = id;
+	}
 
-	[SerializeField] private bool isMoving;
-	[SerializeField] private bool isRotatingAndScaling;
-
-	public void ChangePriority(int priority)
+	public void SetPriority(int priority)
 	{
 		p3DHit.Priority = priority;
 	}
 
-	
-	private void OnConfirmDecal(bool confirm)
+	public void SetTexture(Texture texture)
 	{
-		gameObject.SetActive(true);
-		StartCoroutine(MakeDecal(confirm));
+		p3DPaint.Texture = texture;
 	}
 
-	private IEnumerator MakeDecal(bool make)
+	private void OnConfirm()
 	{
-		if (make && p3DHit.gameObject.activeSelf)
-		{
-			p3DHit.MakeShot();
-		}
+		StartCoroutine(MakeDecal());
+	}
+
+	private IEnumerator MakeDecal()
+	{
+		p3DHit.MakeShot();
 
 		IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DisableAllButtons();
 		yield return null;
@@ -46,59 +46,29 @@ public class DecalManipulationController : MonoBehaviour
 		decalRotator.RevertToDefault();
 	}
 
-	private void OnStartMoving()
+	public void OnStartMoving()
 	{
-		isMoving = true;
 		decalMover.StartMoving();
 	}
 
-	private void OnFinishMoving()
+	public void Move(Vector3 vector)
 	{
-		isMoving = false;
+		decalMover.Move(vector);
 	}
 
-	private void OnStartRotationAndScaling()
+	public void OnStartRotationAndScaling()
 	{
-		isRotatingAndScaling = true;
 		decalScaler.StartScaling();
 		decalRotator.StartRotation();
 	}
 
-	private void OnFinishRotationAndScaling()
+	public void AddAngle(float angle)
 	{
-		isRotatingAndScaling = false;
+		decalRotator.AddRotationAngle(angle);
 	}
 
-	private void Update()
-    {
-		if (isMoving)
-		{
-			decalMover.Move(manipulatorUIController.difference);
-		}
-
-		if (isRotatingAndScaling)
-		{
-			decalScaler.AddScale(manipulatorUIController.difference.x);
-			decalRotator.AddRotationAngle(manipulatorUIController.difference.y);
-		}
-	}
-
-	private void Awake()
+	public void Scale(float multiplier)
 	{
-		manipulatorUIController = IngameUIManager.Instance.manipulatorViewUIController;
-		manipulatorUIController.OnConfirmDecalPainting += OnConfirmDecal;
-		manipulatorUIController.OnStartMoving += OnStartMoving;
-		manipulatorUIController.OnStartRotationAndScaling += OnStartRotationAndScaling;
-		manipulatorUIController.OnFinishMoving += OnFinishMoving;
-		manipulatorUIController.OnFinishRotationAndScaling += OnFinishRotationAndScaling;
-	}
-
-	private void OnDestroy()
-	{
-		manipulatorUIController.OnConfirmDecalPainting -= OnConfirmDecal;
-		manipulatorUIController.OnStartMoving -= OnStartMoving;
-		manipulatorUIController.OnStartRotationAndScaling -= OnStartRotationAndScaling;
-		manipulatorUIController.OnFinishMoving -= OnFinishMoving;
-		manipulatorUIController.OnFinishRotationAndScaling -= OnFinishRotationAndScaling;
+		decalScaler.AddScale(multiplier);
 	}
 }

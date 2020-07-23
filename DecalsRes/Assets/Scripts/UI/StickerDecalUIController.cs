@@ -6,21 +6,39 @@ using UnityEngine.UI;
 
 public class StickerDecalUIController : MonoBehaviour
 {
-	public Action<Sprite> OnStickerClicked;
+	public Action<Sprite, int> OnStickerClicked;
 
 	public GameObject stickerSubcategoryObject;
 	public GameObject customizationManipulatorView;
 
 	public List<Button> stickerButtons = new List<Button>();
+	private List<CanvasGroup> stickerCanvasGroups = new List<CanvasGroup>();
+
 	public P3dPaintDecal stickerDecal;
+	private int stickerID = 0;
+
+	private void Start()
+	{
+		IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting += OnConfirmSticker;
+
+		for (int i = 0; i < stickerButtons.Count; i++)
+		{
+			stickerCanvasGroups.Add(stickerButtons[i].GetComponent<CanvasGroup>());
+		}
+	}
+
+	private void OnDestroy()
+	{
+		IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting -= OnConfirmSticker;
+	}
 
 	public bool IsAnyButtonEnabled
 	{
 		get
 		{
-			for (int i = 0; i < stickerButtons.Count; i++)
+			for (int i = 0; i < stickerCanvasGroups.Count; i++)
 			{
-				if (stickerButtons[i].gameObject.activeSelf)
+				if (Mathf.Approximately(stickerCanvasGroups[i].alpha,1))
 					return true;
 			}
 
@@ -36,28 +54,32 @@ public class StickerDecalUIController : MonoBehaviour
 
 	public void OnStickerButtonClick(int stickerIndex)
 	{
-		if(stickerIndex >= 0 && stickerIndex < stickerButtons.Count)
+		if (stickerIndex >= 0 && stickerIndex < stickerButtons.Count)
 		{
-			foreach (var button in stickerButtons)
-				button.GetComponent<CanvasGroup>().alpha = 0.5f;
+			foreach (var group in stickerCanvasGroups)
+				group.alpha = 0.5f;
 
-			stickerButtons[stickerIndex].GetComponent<CanvasGroup>().alpha = 1;
-			stickerDecal.Texture = stickerButtons[stickerIndex].GetComponent<Image>().mainTexture;
+			stickerCanvasGroups[stickerIndex].alpha = 1;
 		}
 
 		if (IsAnyButtonEnabled)
 		{
-			stickerDecal.gameObject.SetActive(true);
-			OnStickerClicked?.Invoke(stickerButtons[stickerIndex].GetComponent<Image>().sprite);
+			IngameUIManager.Instance.decalLayers.DeselectItems();
+
+			OnStickerClicked?.Invoke(stickerButtons[stickerIndex].GetComponent<Image>().sprite, stickerID);
 		}
 	}
 
 	public void DisableAllButtons()
 	{
-		foreach (var button in stickerButtons)
+		foreach (var group in stickerCanvasGroups)
 		{
-			button.GetComponent<CanvasGroup>().alpha = 0.5f;
+			group.alpha = 0.5f;
 		}
-		stickerDecal.gameObject.SetActive(false);
+	}
+
+	private void OnConfirmSticker(bool confirm)
+	{
+		if(confirm) stickerID++;
 	}
 }
