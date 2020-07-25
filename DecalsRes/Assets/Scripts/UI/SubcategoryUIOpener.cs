@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class SubcategoryUIOpener : MonoBehaviour
 {
+	// Views can be opened
 	public List<SubcategoryUIView> views = new List<SubcategoryUIView>();
 
 	public void OnClick(int buttonIndex)
 	{
-
 		if (buttonIndex >= 0)
 		{
 			SubviewType subview = (SubviewType)buttonIndex;

@@ -1,4 +1,6 @@
-﻿public enum SubviewType
+﻿/// <summary>All view types that will be opened and can be closed by "Back button".  
+/// OnClick callback can only take primitives as argument. To know which view was opened you can use this enum.</summary>
+public enum SubviewType
 {
 	None = 0,
 	Colors = 1,

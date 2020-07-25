@@ -1,20 +1,19 @@
-﻿using PaintIn3D;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StickerDecalUIController : MonoBehaviour
 {
-	public Action<Sprite, int> OnStickerClicked;
+	public Action<Sprite, int> OnStickerChosen;		
 
-	public GameObject stickerSubcategoryObject;
+	public GameObject stickerSubcategoryView;
 	public GameObject customizationManipulatorView;
 
 	public List<Button> stickerButtons = new List<Button>();
 	private List<CanvasGroup> stickerCanvasGroups = new List<CanvasGroup>();
 
-	public P3dPaintDecal stickerDecal;
+	// Unique ID for each sticker. 
 	private int stickerID = 0;
 
 	private void Start()
@@ -48,7 +47,7 @@ public class StickerDecalUIController : MonoBehaviour
 
 	private void Update()
 	{
-		customizationManipulatorView.SetActive(stickerSubcategoryObject.activeSelf);
+		customizationManipulatorView.SetActive(stickerSubcategoryView.activeSelf);
 	}
 
 
@@ -62,15 +61,12 @@ public class StickerDecalUIController : MonoBehaviour
 			stickerCanvasGroups[stickerIndex].alpha = 1;
 		}
 
-		if (IsAnyButtonEnabled)
-		{
-			IngameUIManager.Instance.decalLayers.DeselectItems();
 
-			OnStickerClicked?.Invoke(stickerButtons[stickerIndex].GetComponent<Image>().sprite, stickerID);
-		}
+		IngameUIManager.Instance.decalLayers.DeselectItems();
+		OnStickerChosen?.Invoke(stickerButtons[stickerIndex].GetComponent<Image>().sprite, stickerID);
 	}
 
-	public void DisableAllButtons()
+	public void DeselectButtons()
 	{
 		foreach (var group in stickerCanvasGroups)
 		{
@@ -80,6 +76,15 @@ public class StickerDecalUIController : MonoBehaviour
 
 	private void OnConfirmSticker(bool confirm)
 	{
-		if(confirm) stickerID++;
+		// When user confirms sticker creation then increment ID. It will be next item ID
+		if (confirm)
+		{
+			stickerID++;
+		}
+		// Otherwise deselect all sticker buttons
+		else
+		{
+			DeselectButtons();
+		}
 	}
 }

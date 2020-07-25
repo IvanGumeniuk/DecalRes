@@ -1,5 +1,4 @@
 ﻿using PaintIn3D;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,12 +6,22 @@ public class DecalManipulationController : MonoBehaviour
 {
 	public int id;
 
-    public P3dHitBetween p3DHit;
-    public P3dPaintDecal p3DPaint;
+	// Camera transform data. It stores to prevent wrong projection when other decal was selected, camera position and rotation changed and this object selected again
+	public float verticalOffset;
+	public float horizontalOffset;
+
+    public P3dHitBetween p3DHitBetweenController;
+    public P3dPaintDecal p3DPaintDecalController;
 
 	public DecalRotator decalRotator;
     public DecalScaler decalScaler;
 	public DecalMover decalMover;
+
+	public void SetCameraTransformData(float verticalOffset, float horizontalOffset)
+	{
+		this.verticalOffset = verticalOffset;
+		this.horizontalOffset = horizontalOffset;
+	}
 
 	public void SetID(int id)
 	{
@@ -21,12 +30,12 @@ public class DecalManipulationController : MonoBehaviour
 
 	public void SetPriority(int priority)
 	{
-		p3DHit.Priority = priority;
+		p3DHitBetweenController.Priority = priority;
 	}
 
 	public void SetTexture(Texture texture)
 	{
-		p3DPaint.Texture = texture;
+		p3DPaintDecalController.Texture = texture;
 	}
 
 	private void OnConfirm()
@@ -36,9 +45,9 @@ public class DecalManipulationController : MonoBehaviour
 
 	private IEnumerator MakeDecal()
 	{
-		p3DHit.MakeShot();
+		p3DHitBetweenController.MakeShot();
 
-		IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DisableAllButtons();
+		IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
 		yield return null;
 
 		decalMover.RevertToDefault();

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,13 +19,13 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public Vector3 startPosition;
     public Vector3 difference;
 
-    private bool StickerIsAvailable { get { return IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.IsAnyButtonEnabled; } }
+    private bool StickerIsChosen { get { return IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.IsAnyButtonEnabled; } }
 
     public void OnConfirmButtonClick()
 	{
-        if (StickerIsAvailable)
+        if (StickerIsChosen)
         {
-            IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DisableAllButtons();
+            IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
             OnConfirmDecalPainting?.Invoke(true);
             return;
         }
@@ -37,11 +35,12 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
     public void OnCancelButtonClick()
     {
-        if (StickerIsAvailable)
+        if (StickerIsChosen)
         {
             OnConfirmDecalPainting?.Invoke(false);
             return;
         }
+
         OnConfirmDecalChanging?.Invoke(false);
     }
 

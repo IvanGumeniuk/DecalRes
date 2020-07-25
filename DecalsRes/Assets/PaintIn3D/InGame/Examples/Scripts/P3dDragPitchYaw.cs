@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -63,7 +64,7 @@ namespace PaintIn3D.Examples
 			pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
 			// Smoothly dampen values
-			var factor = P3dHelper.DampenFactor(dampening, Time.deltaTime);
+			var factor = 1;// P3dHelper.DampenFactor(dampening, Time.deltaTime);
 
 			currentPitch = Mathf.Lerp(currentPitch, pitch, factor);
 			currentYaw   = Mathf.Lerp(currentYaw  , yaw  , factor);

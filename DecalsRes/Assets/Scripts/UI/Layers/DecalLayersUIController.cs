@@ -1,38 +1,40 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DecalLayersUIController : MonoBehaviour
 {
-    public Action<int> OnLayerItemRemoved;              // int - item`s ID 
-    public Action<int> OnLayerItemSelected;              // int - item`s ID 
-    public Action<Dictionary<int, int>> OnLayerItemsPrioritiesChanged;              // int - item`s ID 
+    public Action<int> OnLayerItemRemoved;                                          // int - item`s ID 
+    public Action<int> OnLayerItemSelected;                                         // int - item`s ID 
+    public Action<Dictionary<int, int>> OnLayerItemsPrioritiesChanged;              // <item`s ID, priority>
 
     [SerializeField] private List<DecalLayerItem> layerItems = new List<DecalLayerItem>();
     [SerializeField] private RectTransform layerItemsHolder;
     [SerializeField] private DecalLayerItem itemPrefab;
 
+    // ID and sprite of element will be spawned
     private Sprite newItemSprite;
     private int newItemID;
 
+    public bool IsLayerSelected { get { return layerItems.Find(x => x.Selected) != null; } }
+
     private void Start()
     {
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerClicked += OnStickerClicked;
+        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerChosen += OnStickerChosen;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting += OnConfirmDecalCreating;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging += OnConfirmDecalChanging;
     }
 
     private void OnDestroy()
     {
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerClicked -= OnStickerClicked;
+        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerChosen -= OnStickerChosen;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting -= OnConfirmDecalCreating;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging -= OnConfirmDecalChanging;
     }
 
     private void OnConfirmDecalCreating(bool confirm)
 	{
-        if (!confirm)
+        if (!confirm || IsLayerSelected)
             return;
 
         DecalLayerItem item = Instantiate(itemPrefab, layerItemsHolder);
@@ -45,8 +47,7 @@ public class DecalLayersUIController : MonoBehaviour
         DeselectItems();
     }
 
-
-    private void OnStickerClicked(Sprite sprite, int id)
+    private void OnStickerChosen(Sprite sprite, int id)
 	{
         newItemSprite = sprite;
         newItemID = id;
@@ -58,19 +59,31 @@ public class DecalLayersUIController : MonoBehaviour
     }
 
     public void OnRemoveItem(DecalLayerItem item)
-	{
+    {
         layerItems.Remove(item);
-        OnLayerItemRemoved?.Invoke(item.id);
-
+        OnLayerItemRemoved?.Invoke(item.ID);
         Destroy(item.gameObject);
-	}
+
+        for (int i = 0; i < layerItems.Count; i++)
+        {
+            layerItems[i].Priority = i;
+        }
+
+        UpdateLayerItemsPriorities();
+    }
 
     public void OnItemSelected(DecalLayerItem item)
 	{
-        DeselectItems();
+        foreach (var layerItem in layerItems)
+        {
+            if(layerItem != item)
+                layerItem.Selected = false;
+        }
 
-        item.Selected = true;
-        OnLayerItemSelected?.Invoke(item.id);
+        item.Selected = !item.Selected;
+        OnLayerItemSelected?.Invoke(item.Selected ? item.ID : -1);
+
+        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
     }
 
     public void DeselectItems()
@@ -80,6 +93,7 @@ public class DecalLayersUIController : MonoBehaviour
             layerItem.Selected = false;   
         }
 
+        // -1 - is there no selected layer items 
         OnLayerItemSelected?.Invoke(-1);
     }
 
@@ -87,26 +101,34 @@ public class DecalLayersUIController : MonoBehaviour
 	{
         for (int i = 0; i < layerItems.Count; i++)
 		{
-            if (layerItems[i] == item)
-                continue;
+            bool itemIsHigher = item.ElementWorldCenter.y <= layerItems[i].ElementWorldCenter.y;
+            bool itemIsLower = item.ElementWorldCenter.y >= layerItems[i].ElementWorldCenter.y;
+            
+            bool priorityIsHigher = item.Priority > layerItems[i].Priority;
+            bool priorityIsLower = item.Priority < layerItems[i].Priority;
 
-            bool mustBeOnBottom = item.ElementWorldCenter.y <= layerItems[i].ElementWorldCenter.y && item.priority < layerItems[i].priority;
-            bool mustBeOnTop = item.ElementWorldCenter.y >= layerItems[i].ElementWorldCenter.y && item.priority > layerItems[i].priority;
+            bool mustMoveDown = itemIsHigher && priorityIsLower;
+            bool mustMoveUp = itemIsLower && priorityIsHigher;
 
-            if (mustBeOnBottom || mustBeOnTop)
+            if (mustMoveDown || mustMoveUp)
 			{
-                int temp = item.priority;
-                item.priority = layerItems[i].priority;
-                layerItems[i].priority = temp;
+                int temp = item.Priority;
+                item.Priority = layerItems[i].Priority;
+                layerItems[i].Priority = temp;
             }
         }
 
+        UpdateLayerItemsPriorities();
+    }
+
+    private void UpdateLayerItemsPriorities()
+	{
         Dictionary<int, int> priorities = new Dictionary<int, int>();
 
         for (int i = 0; i < layerItems.Count; i++)
-		{
-            layerItems[i].transform.SetSiblingIndex(layerItems[i].priority);
-            priorities.Add(layerItems[i].id, layerItems[i].priority);
+        {
+            layerItems[i].transform.SetSiblingIndex(layerItems[i].Priority);
+            priorities.Add(layerItems[i].ID, layerItems[i].Priority);
         }
 
         OnLayerItemsPrioritiesChanged?.Invoke(priorities);

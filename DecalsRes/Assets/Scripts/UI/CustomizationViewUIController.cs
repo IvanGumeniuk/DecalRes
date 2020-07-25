@@ -36,6 +36,9 @@ public class CustomizationViewUIController : MonoBehaviour
 
 	public void OpenView(GameObject view, SubviewType subviewType = SubviewType.None)
 	{
+		if (view == null)
+			return;
+
 		if (openedViews.Count > 0)
 		{
 			SubviewType previousView = openedViewTypes[openedViews.Count - 1];

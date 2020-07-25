@@ -12,8 +12,7 @@ public class CustomPaintingDecalUIController : MonoBehaviour
 
 	private void Update()
 	{
-		if (!paintingSubcategoryObject.activeSelf)
-			paintingDecal.gameObject.SetActive(false);
+		paintingDecal.gameObject.SetActive(paintingSubcategoryObject.activeSelf);
 	}
 
 	public void OnPaintingButtonsButtonClick(int paintingIndex)

@@ -3,18 +3,21 @@ using UnityEngine.UI;
 
 public class DecalLayerItem : MonoBehaviour
 {
-    public int id;
-    public int priority;
-	public RectTransform rectTransform;
-	public RectTransform content;
-	public RectTransform selectionOutline;
-	public Image image;
+	[SerializeField] private RectTransform selectionOutline;
 
+	[SerializeField] private Image image;
 	[SerializeField] private Button closeButton;
 
-	[SerializeField] private DecalLayersUIController layersUIController;
+	private RectTransform rectTransform;
+	private RectTransform content;
 
-	private bool selected;
+	private DecalLayersUIController layersUIController;
+
+	public int ID { get; set; }
+	public int Priority { get; set; }
+
+
+	public bool selected;
 	public bool Selected 
 	{
 		get
@@ -48,7 +51,7 @@ public class DecalLayerItem : MonoBehaviour
 	private void Start()
 	{
 		rectTransform = GetComponent<RectTransform>();
-		priority = transform.GetSiblingIndex();
+		Priority = transform.GetSiblingIndex();
 		closeButton.onClick.AddListener(OnRemoveClick);
 	}
 
@@ -61,13 +64,8 @@ public class DecalLayerItem : MonoBehaviour
 	{
 		this.layersUIController = layersUIController;
 		this.content = content;
-		this.id = id;
+		ID = id;
 		image.sprite = itemSprite;
-	}
-
-	public void OnBeginDrag()
-	{
-		//layersUIController.OnBeginDrag(this);
 	}
 
 	public void OnDrag()
@@ -102,7 +100,8 @@ public class DecalLayerItem : MonoBehaviour
 		layersUIController.OnItemSelected(this);
 	}
 
-	void ClampInArea(RectTransform element, RectTransform area)
+	// Clamps "element" position in "area" rectangle
+	private void ClampInArea(RectTransform element, RectTransform area)
 	{
 		Vector3 pos = area.localPosition;
 

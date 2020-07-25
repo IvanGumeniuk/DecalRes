@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class DecalTargetChanger : MonoBehaviour
 {
+    // List of decal`s target game objects
     public List<GameObject> targets = new List<GameObject>();
     public int activeIndex = 0;
 
@@ -16,7 +15,7 @@ public class DecalTargetChanger : MonoBehaviour
             ChangeTarget();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        /*if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             activeIndex = 1;
             ChangeTarget();
@@ -26,12 +25,12 @@ public class DecalTargetChanger : MonoBehaviour
         {
             activeIndex = 2;
             ChangeTarget();
-        }
+        }*/
     }
 
 	private void ChangeTarget()
 	{
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DisableAllButtons();
+        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
 
         for (int i = 0; i < targets.Count; i++)
         {
