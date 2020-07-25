@@ -759,7 +759,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -10.0000305, y: 0}
+  m_AnchoredPosition: {x: -10, y: 0}
   m_SizeDelta: {x: -380.00006, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &56887586
@@ -5647,7 +5647,6 @@ GameObject:
   m_Component:
   - component: {fileID: 772563703}
   - component: {fileID: 772563702}
-  - component: {fileID: 772563704}
   m_Layer: 0
   m_Name: Tools
   m_TagString: Untagged
@@ -5685,26 +5684,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &772563704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 772563701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31e31bc4d092ed4bad678261b531804, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  verticalOffset: 0
-  horizontalOffset: 0
-  p3DHitBetweenController: {fileID: 0}
-  p3DPaintDecalController: {fileID: 0}
-  decalRotator: {fileID: 0}
-  decalScaler: {fileID: 0}
-  decalMover: {fileID: 0}
 --- !u!1 &782147663
 GameObject:
   m_ObjectHideFlags: 0
@@ -6526,7 +6505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -10.0000305, y: 0}
+  m_AnchoredPosition: {x: -10, y: 0}
   m_SizeDelta: {x: -380.00006, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &844205757
@@ -7632,7 +7611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7cc9f3e5047115439003cc5c3c1f430, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stickerSubcategoryObject: {fileID: 844205755}
+  stickerSubcategoryView: {fileID: 844205755}
   customizationManipulatorView: {fileID: 1961835147}
   stickerButtons:
   - {fileID: 1517131876}
@@ -8412,7 +8391,7 @@ MonoBehaviour:
   prefab: {fileID: 8614267741942346824, guid: 128ae989fcdb1974f9ac659d228e71b9, type: 3}
   staticDecalsHolder: {fileID: 460510340}
   dynamicDecalsHolder: {fileID: 2076375565}
-  decalPainters: []
+  decal: []
   currectActive: {fileID: 0}
   cameraPivot: {fileID: 1030334456}
   isMoving: 0
