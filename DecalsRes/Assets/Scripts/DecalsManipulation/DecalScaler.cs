@@ -13,6 +13,8 @@ public class DecalScaler : MonoBehaviour
     public float startScale = 1;
 	public Vector2 scaleClamp = new Vector2(0.05f, 10);
 
+	public bool Reflected { get; private set; }
+
 	private void Start()
 	{
 		decal = GetComponent<P3dPaintDecal>();
@@ -40,5 +42,14 @@ public class DecalScaler : MonoBehaviour
 	public void RevertToDefault()
 	{
 		decal.Scale = defaultScale;
+	}
+
+	public void Reflect()
+	{
+		Vector3 scale = decal.Scale;
+		scale.x *= -1;
+		decal.Scale = scale;
+
+		Reflected = scale.x < 0;
 	}
 }

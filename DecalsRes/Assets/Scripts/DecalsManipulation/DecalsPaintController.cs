@@ -58,11 +58,17 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Mouse1))
+		{
+			manipulatorUIController.SetCameraText("Free");
+		}
+
 		if (currectActive == null)
 			return;
 		
 		// Update camera position and rotation for active decal
 		currectActive.SetCameraTransformData(cameraPivot.Pitch, cameraPivot.Yaw);
+		manipulatorUIController.SetReflectionText($"{currectActive.Reflected}");
 
 		if (isMoving)
 		{
@@ -223,6 +229,12 @@ public class DecalsPaintController : MonoBehaviour
 		isRotatingAndScaling = false;
 	}
 
+	private void OnReflection()
+	{
+		if (currectActive != null)
+			currectActive.Reflect();
+	}
+
 	// Subscribing to UI decal`s manipulations events
 	private void Subscribe()
 	{
@@ -230,7 +242,8 @@ public class DecalsPaintController : MonoBehaviour
         manipulatorUIController.OnStartRotationAndScaling += OnStartRotationAndScaling;
         manipulatorUIController.OnFinishMoving += OnFinishMoving;
         manipulatorUIController.OnFinishRotationAndScaling += OnFinishRotationAndScaling;
-    }
+		manipulatorUIController.OnReflectionPressed += OnReflection;
+	}
 
 	private void Unsubscribe()
 	{
@@ -238,5 +251,6 @@ public class DecalsPaintController : MonoBehaviour
         manipulatorUIController.OnStartRotationAndScaling -= OnStartRotationAndScaling;
         manipulatorUIController.OnFinishMoving -= OnFinishMoving;
         manipulatorUIController.OnFinishRotationAndScaling -= OnFinishRotationAndScaling;
-    }
+		manipulatorUIController.OnReflectionPressed -= OnReflection;
+	}
 }

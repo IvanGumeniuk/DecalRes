@@ -11,15 +11,29 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public event Action OnStartRotationAndScaling;
     public event Action OnFinishRotationAndScaling;
 
+    public event Action OnCameraSidePressed;
+    public event Action OnReflectionPressed;
+    public event Action OnPaintableTargetPressed;
+
     public Button moveButton;
     public Button sizeButton;
     public Button confirmButton;
     public Button cancelButton;
 
+    public Button cameraSideButton;
+    public Button reflectionButton;
+    public Button mirrorButton;
+    public Button paintableTargetButton;
+
+    public Text cameraSideText;
+    public Text reflectionText;
+    public Text paintableTargetText;
+
     public Vector3 startPosition;
     public Vector3 difference;
 
     private bool StickerIsChosen { get { return IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.IsAnyButtonEnabled; } }
+
 
     public void OnConfirmButtonClick()
 	{
@@ -84,5 +98,35 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
         difference = Vector3.zero;
 
         OnFinishRotationAndScaling?.Invoke();
+    }
+
+    public void SetCameraText(string text)
+    {
+        cameraSideText.text = "Camera: " + text;
+    }
+
+    public void SetReflectionText(string text)
+    {
+        reflectionText.text = "Reflected: " + text;
+    }
+
+    public void SetPaintableTargetText(string text)
+    {
+        paintableTargetText.text = "Target: " + text;
+    }
+
+    public void OnCameraSideClick()
+	{
+        OnCameraSidePressed?.Invoke();
+	}
+
+    public void OnReflectionClicked()
+	{
+        OnReflectionPressed?.Invoke();
+    }
+    
+    public void OnPaintableTargetClicked()
+	{
+        OnPaintableTargetPressed?.Invoke();
     }
 }

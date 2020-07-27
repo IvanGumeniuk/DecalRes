@@ -16,6 +16,7 @@ public class DecalManipulationController : MonoBehaviour
 	public DecalRotator decalRotator;
     public DecalScaler decalScaler;
 	public DecalMover decalMover;
+	public bool Reflected { get { return decalScaler.Reflected; } }
 
 	public void SetCameraTransformData(float verticalOffset, float horizontalOffset)
 	{
@@ -79,5 +80,10 @@ public class DecalManipulationController : MonoBehaviour
 	public void Scale(float multiplier)
 	{
 		decalScaler.AddScale(multiplier);
+	}
+
+	public void Reflect()
+	{
+		decalScaler.Reflect();
 	}
 }
