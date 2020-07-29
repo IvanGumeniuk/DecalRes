@@ -1,5 +1,6 @@
 ﻿using PaintIn3D.Examples;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +10,19 @@ public class CameraController : MonoBehaviour
     [SerializeField] private P3dDragPitchYaw cameraController;
 
     [SerializeField] private List<CameraPositionData> cameraPositions = new List<CameraPositionData>();
-    private CustomizationManipulatorViewUIController manipulatorView;
 
     [SerializeField] private CarSide carSide;
-   
+
+    private CustomizationManipulatorViewUIController manipulatorView;
+
+    public Transform targetPivot;
+    public Vector3 defaultPivot;
+    public Camera mainCamera;
+
+    public float Pitch { get { return cameraController.Pitch; }  private set { cameraController.Pitch = value; } }
+    public float Yaw { get { return cameraController.Yaw; } private set { cameraController.Yaw = value; } }
+
+
     private int currentlySelectedIndex = -1;
     private int Index
 	{
@@ -35,6 +45,8 @@ public class CameraController : MonoBehaviour
     {
         manipulatorView = IngameUIManager.Instance.manipulatorViewUIController;
         manipulatorView.OnCameraSidePressed += ChangeCarSide;
+
+        mainCamera = Camera.main;
     }
 
     private void OnDestroy()
@@ -57,6 +69,57 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void SetPivot(Transform target, bool updateCameraPositionWithDelay = false)
+	{
+        targetPivot = target;
+        UpdateCameraPosition(updateCameraPositionWithDelay);
+    }
+
+    public void UpdateCameraPosition(bool withDelay = false)
+	{
+		if (withDelay)
+		{
+            StartCoroutine(UpdateCameraPosition());
+            return;
+		}
+
+        if (targetPivot != null)
+        {
+            transform.position = targetPivot.position;
+        }
+        else
+        {
+            transform.position = defaultPivot;
+        }
+    }
+
+    public void ResetToDefaultPosition(bool withDelay = false)
+	{
+        if (withDelay)
+        {
+            targetPivot = null;
+            StartCoroutine(UpdateCameraPosition());
+            return;
+        }
+
+        targetPivot = null;
+        transform.position = defaultPivot;
+    }
+
+    private IEnumerator UpdateCameraPosition()
+	{
+        yield return null;
+        yield return null;
+
+        if (targetPivot != null)
+        {
+            transform.position = targetPivot.position;
+        }
+        else
+        {
+            transform.position = defaultPivot;
+        }
+    }
 	private void ChangeCarSide()
 	{
         Index++;
@@ -66,8 +129,8 @@ public class CameraController : MonoBehaviour
 
     public void SetCameraPosition(float vertical, float horizontal)
 	{
-        cameraController.Pitch = vertical;
-        cameraController.Yaw = horizontal;
+        Pitch = vertical;
+        Yaw = horizontal;
     }
 
     [Serializable]

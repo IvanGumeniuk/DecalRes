@@ -95,6 +95,7 @@ Transform:
   m_Children:
   - {fileID: 4280242847682396766}
   - {fileID: 4280242847379273040}
+  - {fileID: 626632134115351151}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -133,7 +134,7 @@ MonoBehaviour:
   hitSpacing: 0
   hitLimit: 1
   connectHits: 0
-  paintIn: 0
+  paintIn: 1
   interval: 0
   pointA: {fileID: 4280242847682396766}
   pointB: {fileID: 4280242847379273040}
@@ -149,7 +150,7 @@ MonoBehaviour:
   priority: 0
   pressure: 0
   draw: 0
-  point: {fileID: 0}
+  point: {fileID: 626632134115351151}
   line: {fileID: 0}
 --- !u!114 &4280242848850410136
 MonoBehaviour:
@@ -243,8 +244,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 517df203e7abf5d419c7455a4d05b6eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  decal: {fileID: 0}
-  movableHitPoint: {fileID: 4280242847379273040}
-  movableHitPointDefaultPosition: {x: 0, y: 0, z: 0}
-  movableHitPointStartPosition: {x: 0, y: 0, z: 0}
+  hitController: {fileID: 4280242848850410133}
+  pointA: {fileID: 4280242847682396766}
+  pointB: {fileID: 4280242847379273040}
+  pointADefaultPosition: {x: 0, y: 0, z: 0}
+  pointAStartPosition: {x: 0, y: 0, z: 0}
+  pointBDefaultPosition: {x: 0, y: 0, z: 0}
+  pointBStartPosition: {x: 0, y: 0, z: 0}
   movingSpeed: 0.005
+  distanceBetweenPoints: 20
+  movingVector: {x: 0, y: 0, z: 0}
+--- !u!1 &6404948393200700004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 626632134115351151}
+  m_Layer: 0
+  m_Name: HitPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &626632134115351151
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6404948393200700004}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4280242848850410137}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

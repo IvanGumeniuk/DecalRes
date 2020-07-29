@@ -15,6 +15,8 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public event Action OnReflectionPressed;
     public event Action OnPaintableTargetPressed;
 
+    public FloatingUIComponentController floatingUIController;
+
     public Button moveButton;
     public Button sizeButton;
     public Button confirmButton;

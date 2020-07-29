@@ -10,8 +10,8 @@ public class DecalsPaintController : MonoBehaviour
     [SerializeField] private Transform dynamicDecalsHolder;					// Active decal`s parent
     [SerializeField] private List<DecalManipulationController> decal = new List<DecalManipulationController>();
 
-    [SerializeField] private DecalManipulationController currectActive;		// Currently active decal
-	[SerializeField] private P3dDragPitchYaw cameraPivot;					// Camera controller
+    [SerializeField] private DecalManipulationController currentActive;		// Currently active decal
+	[SerializeField] private CameraController cameraController;					
 
 	[SerializeField] private bool isMoving;
 	[SerializeField] private bool isRotatingAndScaling;
@@ -63,16 +63,21 @@ public class DecalsPaintController : MonoBehaviour
 			manipulatorUIController.SetCameraText("Free");
 		}
 
-		if (currectActive == null)
+		if (currentActive == null)
 			return;
 		
 		// Update camera position and rotation for active decal
-		currectActive.SetCameraTransformData(cameraPivot.Pitch, cameraPivot.Yaw);
-		manipulatorUIController.SetReflectionText($"{currectActive.Reflected}");
+		currentActive.SetCameraTransformData(cameraController.Pitch, cameraController.Yaw);
+		manipulatorUIController.SetReflectionText($"{currentActive.Reflected}");
+
 
 		if (isMoving)
 		{
 			Move(manipulatorUIController.difference);
+		}
+		else
+		{
+			currentActive.decalMover.UpdateRaycastPosition(cameraController.mainCamera.transform);
 		}
 
 		if (isRotatingAndScaling)
@@ -84,69 +89,88 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnConfirmDecalCreation(bool confirm)
 	{
-		if (currectActive == null)
+		if (currentActive == null)
+		{
+			cameraController.ResetToDefaultPosition();
+			manipulatorUIController.floatingUIController.SetTarget(null);
 			return;
+		}
+		
 
 		if (confirm)
 		{
-			decal.Add(currectActive);
-			currectActive.transform.SetParent(staticDecalsHolder);
+			decal.Add(currentActive);
+			currentActive.transform.SetParent(staticDecalsHolder);
         }
 		else
 		{
-			if (decal.Contains(currectActive))
-				decal.Remove(currectActive);
+			if (decal.Contains(currentActive))
+				decal.Remove(currentActive);
 
-            Destroy(currectActive.gameObject);
+            Destroy(currentActive.gameObject);
 		}
 
-        currectActive = null;
+        currentActive = null;
+		cameraController.ResetToDefaultPosition();
+		manipulatorUIController.floatingUIController.SetTarget(null);
+
 		Unsubscribe();
 	}
 
 	private void OnNewDecalChosen(Sprite decalSprite, int id)
 	{
-        if(currectActive == null)
+        if(currentActive == null)
 		{
-			currectActive = Instantiate(prefab, dynamicDecalsHolder);
-			currectActive.SetID(id);
-			currectActive.SetPriority(maxPriority + 1);
+			currentActive = Instantiate(prefab, dynamicDecalsHolder);
+			currentActive.SetID(id);
+			currentActive.SetPriority(maxPriority + 1);
+			cameraController.SetPivot(currentActive.HitPoint, true);
+			manipulatorUIController.floatingUIController.SetTarget(currentActive.HitPoint);
 
 			Subscribe();
 		}
 
-        currectActive.SetTexture(decalSprite.texture);
+        currentActive.SetTexture(decalSprite.texture);
     }
 
 	private void ChangeCurrent(int newItemID)
 	{
-		if (currectActive != null)
+		if (currentActive != null)
 		{
-			if (currectActive.id == newItemID)
+			if (currentActive.id == newItemID)
 				return;
 
-			currectActive.transform.SetParent(staticDecalsHolder);
+			currentActive.transform.SetParent(staticDecalsHolder);
 			Unsubscribe();
 		}
 
-		currectActive = GetItemWithID(newItemID);
+		currentActive = GetItemWithID(newItemID);
 
-		if (currectActive != null)
+		if (currentActive != null)
 		{
-			cameraPivot.Pitch = currectActive.verticalOffset == 0 ? cameraPivot.Pitch : currectActive.verticalOffset;
-			cameraPivot.Yaw = currectActive.horizontalOffset == 0 ? cameraPivot.Yaw : currectActive.horizontalOffset; ;
+			float vertical = currentActive.verticalOffset == 0 ? cameraController.Pitch : currentActive.verticalOffset;
+			float horizontal = currentActive.horizontalOffset == 0 ? cameraController.Yaw : currentActive.horizontalOffset;
+			
+			cameraController.SetPivot(currentActive.HitPoint);
+			manipulatorUIController.floatingUIController.SetTarget(currentActive.HitPoint);
+			cameraController.SetCameraPosition(vertical, horizontal);
 
 			// Need a frame to update stored camera position and rotation
 			StartCoroutine(SetParentWithDelay(dynamicDecalsHolder));
 
 			Subscribe();
 		}
+		else
+		{
+			cameraController.SetPivot(null);
+			manipulatorUIController.floatingUIController.SetTarget(null);
+		}
 	}
 
 	private IEnumerator SetParentWithDelay(Transform parent)
 	{
 		yield return null;
-		currectActive.transform.SetParent(parent);
+		currentActive.transform.SetParent(parent);
 	}
 
 	private DecalManipulationController GetItemWithID(int id)
@@ -156,7 +180,7 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnLayerItemSelected(int id)
 	{
-		if (currectActive != null && !decal.Contains(currectActive))
+		if (currentActive != null && !decal.Contains(currentActive))
 		{
 			OnConfirmDecalCreation(false);
 		}
@@ -188,40 +212,43 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnStartMoving()
 	{
-		if (currectActive != null)
+		if (currentActive != null)
 		{
 			isMoving = true;
-			currectActive.OnStartMoving();
+			currentActive.OnStartMoving();
 		}
 	}
 
 	private void Move(Vector3 vector)
 	{
-		currectActive.Move(vector);
+		currentActive.Move(vector);
 	}
 
 	private void OnFinishMoving()
 	{
 		isMoving = false;
+
+		if (Vector3.Distance(currentActive.HitPoint.position, currentActive.decalMover.pointB.position) > 0.1f) 
+			cameraController.UpdateCameraPosition();
 	}
 
 	private void OnStartRotationAndScaling()
 	{
-		if (currectActive != null)
+		if (currentActive != null)
 		{
 			isRotatingAndScaling = true;
-			currectActive.OnStartRotationAndScaling();
+			currentActive.OnStartRotationAndScaling();
 		}
 	}
 
 	private void AddAngle(float angle)
 	{
-		currectActive.AddAngle(angle);
+		currentActive.AddAngle(angle);
 	}
 
 	private void AddScale(float multiplier)
 	{
-		currectActive.Scale(multiplier);
+		currentActive.Scale(multiplier);
 	}
 
 	private void OnFinishRotationAndScaling()
@@ -231,8 +258,8 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnReflection()
 	{
-		if (currectActive != null)
-			currectActive.Reflect();
+		if (currentActive != null)
+			currentActive.Reflect();
 	}
 
 	// Subscribing to UI decal`s manipulations events

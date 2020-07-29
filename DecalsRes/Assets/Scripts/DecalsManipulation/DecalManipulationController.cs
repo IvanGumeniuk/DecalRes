@@ -12,11 +12,14 @@ public class DecalManipulationController : MonoBehaviour
 
     public P3dHitBetween p3DHitBetweenController;
     public P3dPaintDecal p3DPaintDecalController;
-
+	
 	public DecalRotator decalRotator;
     public DecalScaler decalScaler;
 	public DecalMover decalMover;
+	
 	public bool Reflected { get { return decalScaler.Reflected; } }
+	public Transform HitPoint { get { return p3DHitBetweenController.Point; } }
+
 
 	public void SetCameraTransformData(float verticalOffset, float horizontalOffset)
 	{
