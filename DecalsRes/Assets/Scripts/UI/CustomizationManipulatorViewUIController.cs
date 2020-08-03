@@ -30,6 +30,16 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public Text cameraSideText;
     public Text reflectionText;
     public Text paintableTargetText;
+        
+    public Image reflectionImage;
+    public Image paintableTargetImage;
+
+    [SerializeField] private Sprite reflectionEnabledSprite;
+    [SerializeField] private Sprite reflectionDisabledSprite;
+
+    [SerializeField] private Sprite targetBodyWindowsSprite;
+    [SerializeField] private Sprite targetBodySprite;
+    [SerializeField] private Sprite targetWindowsSprite;
 
     public Vector3 startPosition;
     public Vector3 difference;
@@ -107,14 +117,34 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
         cameraSideText.text = "Camera: " + text;
     }
 
-    public void SetReflectionText(string text)
+    public void SetReflectionButtonStatus(bool reflected)
     {
-        reflectionText.text = "Reflected: " + text;
+        reflectionText.text = $"Reflected: {reflected}";
+        reflectionImage.sprite = reflected ? reflectionEnabledSprite : reflectionDisabledSprite;
     }
 
-    public void SetPaintableTargetText(string text)
+    public void SetPaintableTargetStatus(DecalPaintModeController.PaintTarget target)
     {
-        paintableTargetText.text = "Target: " + text;
+        paintableTargetText.text = $"Target: {target}";
+
+        switch (target)
+        {
+            case DecalPaintModeController.PaintTarget.Body:
+                {
+                    paintableTargetImage.sprite = targetBodySprite;
+                    break;
+                }
+            case DecalPaintModeController.PaintTarget.Windows:
+                {
+                    paintableTargetImage.sprite = targetWindowsSprite;
+                    break;
+                }
+            case DecalPaintModeController.PaintTarget.BodyAndWindows:
+                {
+                    paintableTargetImage.sprite = targetBodyWindowsSprite;
+                    break;
+                }
+        }
     }
 
     public void OnCameraSideClick()

@@ -8,7 +8,7 @@ public class DecalPaintModeController : MonoBehaviour
     public List<P3dPaintable> bodyParts = new List<P3dPaintable>();
     public List<P3dPaintable> windowsParts = new List<P3dPaintable>();
     private CustomizationManipulatorViewUIController manipulatorView;
-    [SerializeField] private PaintMode paintMode;
+    [SerializeField] private PaintTarget paintMode;
     private int currentlySelectedIndex = -1;
     private int Index
     {
@@ -19,7 +19,7 @@ public class DecalPaintModeController : MonoBehaviour
             if (currentlySelectedIndex >= 3)
                 currentlySelectedIndex = 0;
 
-            paintMode = (PaintMode)currentlySelectedIndex;
+            paintMode = (PaintTarget)currentlySelectedIndex;
         }
 
         get
@@ -50,23 +50,23 @@ public class DecalPaintModeController : MonoBehaviour
 	{
         Index++;
 
-        manipulatorView.SetPaintableTargetText($"{paintMode}");
+        manipulatorView.SetPaintableTargetStatus(paintMode);
 
         switch (paintMode)
 		{
-			case PaintMode.Body:
+			case PaintTarget.Body:
                 {
                     bodyParts.ForEach(x => x.enabled = true);
                     windowsParts.ForEach(x => x.enabled = false);
                     break;
                 }
-			case PaintMode.Windows:
+			case PaintTarget.Windows:
                 {
                     windowsParts.ForEach(x => x.enabled = true); 
                     bodyParts.ForEach(x => x.enabled = false);
                     break;
                 }
-			case PaintMode.BodyAndWindows:
+			case PaintTarget.BodyAndWindows:
                 {
                     windowsParts.ForEach(x => x.enabled = true);
                     bodyParts.ForEach(x => x.enabled = true); 
@@ -77,7 +77,7 @@ public class DecalPaintModeController : MonoBehaviour
 		}
 	}
 
-    private enum PaintMode
+    public enum PaintTarget
 	{
         Body,
         Windows,

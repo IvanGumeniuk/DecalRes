@@ -7,6 +7,8 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CameraController : MonoBehaviour
 {
+    public Action OnCameraPositionChanged;
+
     [SerializeField] private P3dDragPitchYaw cameraController;
 
     [SerializeField] private List<CameraPositionData> cameraPositions = new List<CameraPositionData>();
@@ -62,10 +64,10 @@ public class CameraController : MonoBehaviour
             cameraPositions.ForEach(x => x.Update());
 		}
 
-        if (Application.isPlaying)
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-                ChangeCarSide();
+            manipulatorView.SetCameraText("Free");
+            Index = -1;
         }
     }
 
@@ -124,7 +126,11 @@ public class CameraController : MonoBehaviour
 	{
         Index++;
         manipulatorView.SetCameraText($"{carSide}");
+        transform.position = defaultPivot;
         SetCameraPosition(cameraPositions[Index].vertical, cameraPositions[Index].horizontal);
+        UpdateCameraPosition(true);
+
+        OnCameraPositionChanged?.Invoke();
     }
 
     public void SetCameraPosition(float vertical, float horizontal)

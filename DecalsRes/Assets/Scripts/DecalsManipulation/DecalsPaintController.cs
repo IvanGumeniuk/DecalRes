@@ -1,4 +1,5 @@
 ﻿using PaintIn3D.Examples;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,7 +35,17 @@ public class DecalsPaintController : MonoBehaviour
 		decalLayersUIController.OnLayerItemsPrioritiesChanged += OnLayerItemsPrioritiesChanged;
 
 		manipulatorUIController.OnConfirmDecalPainting += OnConfirmDecalCreation;
+
+		cameraController.OnCameraPositionChanged += OnCameraPositionChanged;
     }
+
+	private void OnCameraPositionChanged()
+	{
+		if(currentActive != null)
+		{
+			currentActive.decalMover.UpdateRaycastPosition(cameraController.mainCamera.transform);
+		}
+	}
 
 	private void OnDestroy()
 	{
@@ -54,21 +65,21 @@ public class DecalsPaintController : MonoBehaviour
 		{
 			manipulatorUIController.OnConfirmDecalPainting -= OnConfirmDecalCreation;
 		}
+
+		if(cameraController != null)
+		{
+			cameraController.OnCameraPositionChanged -= OnCameraPositionChanged;
+		}
 	}
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Mouse1))
-		{
-			manipulatorUIController.SetCameraText("Free");
-		}
-
 		if (currentActive == null)
 			return;
 		
 		// Update camera position and rotation for active decal
 		currentActive.SetCameraTransformData(cameraController.Pitch, cameraController.Yaw);
-		manipulatorUIController.SetReflectionText($"{currentActive.Reflected}");
+		manipulatorUIController.SetReflectionButtonStatus(currentActive.Reflected);
 
 
 		if (isMoving)
