@@ -1,18 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomizationViewUIController : MonoBehaviour
 {
+	public Action<SubviewType, bool> OnViewOpened;
+
     public Button backButton;
     public Button customizatonButton;
 
 	public List<GameObject> openedViews = new List<GameObject>();
 	public List<SubviewType> openedViewTypes = new List<SubviewType>();
 
+	public SubviewType LastOpened { get { return openedViewTypes.Count > 0 ? openedViewTypes[openedViewTypes.Count - 1] : SubviewType.None; } }
+
 	public GameObject categoryUI;
-	public StickerDecalUIController stickerDecalUIController;
 
 	private void Awake()
 	{
@@ -36,14 +40,14 @@ public class CustomizationViewUIController : MonoBehaviour
 
 	public void OpenView(GameObject view, SubviewType subviewType = SubviewType.None)
 	{
-		if (view == null)
+		if (view == null || (LastOpened == subviewType && LastOpened != SubviewType.None))
 			return;
 
 		if (openedViews.Count > 0)
 		{
-			SubviewType previousView = openedViewTypes[openedViews.Count - 1];
+			bool disablePrevious = LastOpened == SubviewType.Stickers || LastOpened == SubviewType.CustomPainting || LastOpened == SubviewType.CustomText;
 
-			if (previousView == SubviewType.Stickers || previousView == SubviewType.CustomPainting)
+			if (disablePrevious)
 			{
 				openedViews[openedViews.Count - 1].SetActive(false);
 
@@ -56,6 +60,7 @@ public class CustomizationViewUIController : MonoBehaviour
 		openedViewTypes.Add(subviewType);
 
 		openedViews[openedViews.Count - 1].SetActive(true);
+		OnViewOpened?.Invoke(subviewType, true);
 	}
 
 	private void OnBackPressed()
@@ -63,6 +68,9 @@ public class CustomizationViewUIController : MonoBehaviour
 		if (openedViews.Count > 0)
 		{
 			openedViews[openedViews.Count - 1].SetActive(false);
+
+			OnViewOpened?.Invoke(openedViewTypes[openedViewTypes.Count - 1], false);
+
 			openedViews.RemoveAt(openedViews.Count - 1);
 			openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
 

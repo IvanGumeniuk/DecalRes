@@ -23,6 +23,9 @@ public class HueChoosingUIController : MonoBehaviour
     
 	public Color GetColor(Vector3 screenPoint)
 	{
+		if (rect == null)
+			return Color.white;
+
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, screenPoint, null, out onRectPosition);
 
 		onRectPosition.x = width - (width / 2 - onRectPosition.x);

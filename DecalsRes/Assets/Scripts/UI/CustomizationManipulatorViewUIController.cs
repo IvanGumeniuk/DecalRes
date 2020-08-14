@@ -12,8 +12,9 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public event Action OnFinishRotationAndScaling;
 
     public event Action OnCameraSidePressed;
-    public event Action OnReflectionPressed;
+    public event Action OnFlipPressed;
     public event Action OnPaintableTargetPressed;
+    public event Action OnMirrorPressed;
 
     public FloatingUIComponentController floatingUIController;
 
@@ -23,19 +24,24 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public Button cancelButton;
 
     public Button cameraSideButton;
-    public Button reflectionButton;
+    public Button flipButton;
     public Button mirrorButton;
     public Button paintableTargetButton;
 
     public Text cameraSideText;
-    public Text reflectionText;
+    public Text flipText;
+    public Text mirrorText;
     public Text paintableTargetText;
         
     public Image reflectionImage;
+    public Image mirrorImage;
     public Image paintableTargetImage;
 
-    [SerializeField] private Sprite reflectionEnabledSprite;
-    [SerializeField] private Sprite reflectionDisabledSprite;
+    [SerializeField] private Sprite flipEnabledSprite;
+    [SerializeField] private Sprite flipDisabledSprite;
+
+    [SerializeField] private Sprite mirrorEnabledSprite;
+    [SerializeField] private Sprite mirrorDisabledSprite;
 
     [SerializeField] private Sprite targetBodyWindowsSprite;
     [SerializeField] private Sprite targetBodySprite;
@@ -44,14 +50,21 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public Vector3 startPosition;
     public Vector3 difference;
 
-    private bool StickerIsChosen { get { return IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.IsAnyButtonEnabled; } }
+    private DecalsUIController decalsUIController;
+
+    private bool StickerIsChosen { get { return decalsUIController.DecalIsChoosing; } }
 
 
-    public void OnConfirmButtonClick()
+	private void Start()
+	{
+        decalsUIController = IngameUIManager.Instance.decalsController;
+    }
+
+	public void OnConfirmButtonClick()
 	{
         if (StickerIsChosen)
         {
-            IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
+            decalsUIController.DeselectButtons();
             OnConfirmDecalPainting?.Invoke(true);
             return;
         }
@@ -117,10 +130,16 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
         cameraSideText.text = "Camera: " + text;
     }
 
-    public void SetReflectionButtonStatus(bool reflected)
+    public void SetFlipButtonStatus(bool flipped)
     {
-        reflectionText.text = $"Reflected: {reflected}";
-        reflectionImage.sprite = reflected ? reflectionEnabledSprite : reflectionDisabledSprite;
+        flipText.text = $"Flipped: {flipped}";
+        reflectionImage.sprite = flipped ? flipEnabledSprite : flipDisabledSprite;
+    }
+
+    public void SetMirrorButtonStatus(bool reflected)
+    {
+        mirrorText.text = $"Reflected: {reflected}";
+        mirrorImage.sprite = reflected ? mirrorEnabledSprite : mirrorDisabledSprite;
     }
 
     public void SetPaintableTargetStatus(DecalPaintModeController.PaintTarget target)
@@ -152,13 +171,18 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
         OnCameraSidePressed?.Invoke();
 	}
 
-    public void OnReflectionClicked()
+    public void OnFlipClicked()
 	{
-        OnReflectionPressed?.Invoke();
+        OnFlipPressed?.Invoke();
     }
     
     public void OnPaintableTargetClicked()
 	{
         OnPaintableTargetPressed?.Invoke();
+    }
+
+    public void OnMirrorClicked()
+	{
+        OnMirrorPressed?.Invoke();
     }
 }

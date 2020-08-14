@@ -12,12 +12,19 @@ public class DecalRotator : MonoBehaviour
 
 	public Vector2 angleClamp = new Vector2(-180, 180);
 
+	public float angle;
+	public float Angle { get { return decal.Angle; } }
+
 	private void Start()
 	{
 		if (decal == null)
 			decal = GetComponent<P3dPaintDecal>();
 
 		defaultAngle = decal.Angle;
+	}
+	private void Update()
+	{
+		angle = Angle;
 	}
 
 	public void StartRotation()
@@ -34,8 +41,7 @@ public class DecalRotator : MonoBehaviour
 
 	public void SetAngle(float angle)
 	{
-		float currentAngle = defaultAngle + angle;
-		decal.Angle = Mathf.Clamp(currentAngle, angleClamp.x, angleClamp.y);
+		decal.Angle = Mathf.Clamp(angle, angleClamp.x, angleClamp.y);
 	}
 
 	public void RevertToDefault()

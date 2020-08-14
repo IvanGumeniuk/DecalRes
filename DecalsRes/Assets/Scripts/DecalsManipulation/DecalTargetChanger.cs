@@ -9,7 +9,7 @@ public class DecalTargetChanger : MonoBehaviour
 
     void Update()
     {
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+		/*if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
             activeIndex = 0;
             ChangeTarget();
@@ -30,7 +30,7 @@ public class DecalTargetChanger : MonoBehaviour
 
 	private void ChangeTarget()
 	{
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
+        IngameUIManager.Instance.decalsController.DeselectButtons();
 
         for (int i = 0; i < targets.Count; i++)
         {

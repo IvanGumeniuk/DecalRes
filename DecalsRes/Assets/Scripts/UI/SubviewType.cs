@@ -12,5 +12,6 @@ public enum SubviewType
 	Logos = 7,
 	Stickers = 8,
 	Stripes = 9,
-	CustomPainting = 10
+	CustomPainting = 10,
+	CustomText = 11
 }

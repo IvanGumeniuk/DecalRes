@@ -5,7 +5,7 @@ public class DecalLayerItem : MonoBehaviour
 {
 	[SerializeField] private RectTransform selectionOutline;
 
-	[SerializeField] private Image image;
+	[SerializeField] private RawImage image;
 	[SerializeField] private Button closeButton;
 
 	private RectTransform rectTransform;
@@ -13,9 +13,9 @@ public class DecalLayerItem : MonoBehaviour
 
 	private DecalLayersUIController layersUIController;
 
-	public int ID { get; set; }
-	public int Priority { get; set; }
-
+	public int ID;// { get; set; }
+	public int Priority;// { get; set; }
+	public DecalType DecalType;// { get; set; }
 
 	public bool selected;
 	public bool Selected 
@@ -60,12 +60,15 @@ public class DecalLayerItem : MonoBehaviour
 		closeButton.onClick.RemoveListener(OnRemoveClick);
 	}
 
-	public void Initialize(DecalLayersUIController layersUIController, RectTransform content, int id, Sprite itemSprite)
+	public void Initialize(DecalLayersUIController layersUIController, RectTransform content, DecalType decalType, int id, Texture itemSprite)
 	{
 		this.layersUIController = layersUIController;
 		this.content = content;
 		ID = id;
-		image.sprite = itemSprite;
+		DecalType = decalType;
+
+		image.texture = itemSprite;
+		image.SizeToParent();
 	}
 
 	public void OnDrag()

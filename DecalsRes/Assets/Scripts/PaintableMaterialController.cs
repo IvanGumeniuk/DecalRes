@@ -32,4 +32,5 @@ public class PaintableMaterialController : MonoBehaviour
 
 		meshRenderer.materials = materials.ToArray();
 	}
+
 }

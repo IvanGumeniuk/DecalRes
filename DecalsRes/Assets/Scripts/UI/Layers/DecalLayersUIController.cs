@@ -12,34 +12,45 @@ public class DecalLayersUIController : MonoBehaviour
     [SerializeField] private RectTransform layerItemsHolder;
     [SerializeField] private DecalLayerItem itemPrefab;
 
-    // ID and sprite of element will be spawned
-    private Sprite newItemSprite;
-    private int newItemID;
+    // ID and texture of element will be spawned
+    [SerializeField] private DecalType newItemType;
+    [SerializeField] private int newItemID;
+    [SerializeField] private Texture newItemTexture;
 
     public bool IsLayerSelected { get { return layerItems.Find(x => x.Selected) != null; } }
 
     private void Start()
     {
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerChosen += OnStickerChosen;
+        IngameUIManager.Instance.decalsController.OnDecalCreated += OnDecalChosen;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting += OnConfirmDecalCreating;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging += OnConfirmDecalChanging;
     }
 
     private void OnDestroy()
     {
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.OnStickerChosen -= OnStickerChosen;
+        IngameUIManager.Instance.decalsController.OnDecalCreated -= OnDecalChosen;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting -= OnConfirmDecalCreating;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging -= OnConfirmDecalChanging;
     }
 
-    private void OnConfirmDecalCreating(bool confirm)
+    public void CreateLayerElement(DecalType decalType, int id, Texture texture)
 	{
-        if (!confirm || IsLayerSelected)
+        if (IsLayerSelected)
             return;
 
         DecalLayerItem item = Instantiate(itemPrefab, layerItemsHolder);
         layerItems.Add(item);
-        item.Initialize(this, layerItemsHolder, newItemID, newItemSprite);
+        item.Initialize(this, layerItemsHolder, decalType, id, texture);
+    }
+
+    private void OnConfirmDecalCreating(bool confirm)
+	{
+        /*if (!confirm || IsLayerSelected)
+            return;
+
+        DecalLayerItem item = Instantiate(itemPrefab, layerItemsHolder);
+        layerItems.Add(item);
+        item.Initialize(this, layerItemsHolder, newItemID, newItemTexture);*/
     }
 
     private void OnConfirmDecalChanging(bool confirm)
@@ -47,10 +58,11 @@ public class DecalLayersUIController : MonoBehaviour
         DeselectItems();
     }
 
-    private void OnStickerChosen(Sprite sprite, int id)
+    private void OnDecalChosen(DecalType type, int id, Texture texture)
 	{
-        newItemSprite = sprite;
+        newItemType = type;
         newItemID = id;
+        newItemTexture = texture;
     }
 
     public void OnBeginDrag(DecalLayerItem item)
@@ -83,7 +95,7 @@ public class DecalLayersUIController : MonoBehaviour
         item.Selected = !item.Selected;
         OnLayerItemSelected?.Invoke(item.Selected ? item.ID : -1);
 
-        IngameUIManager.Instance.customizationViewUIController.stickerDecalUIController.DeselectButtons();
+        IngameUIManager.Instance.decalsController.DeselectButtons();
     }
 
     public void DeselectItems()

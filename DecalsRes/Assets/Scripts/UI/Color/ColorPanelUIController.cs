@@ -23,6 +23,8 @@ public class ColorPanelUIController : MonoBehaviour
         saturation.onValueChanged.AddListener(OnColorModifierValueChanged);
         brightness.onValueChanged.AddListener(OnColorModifierValueChanged);
         alpha.onValueChanged.AddListener(OnColorModifierValueChanged);
+
+        UpdateColor();
     }
 
 	private void OnDestroy()
@@ -40,20 +42,51 @@ public class ColorPanelUIController : MonoBehaviour
 
         Color.RGBToHSV(color, out float h, out float s, out float v);
 
-        s = 1 - saturation.value;
+        s = saturation.value;
         v = 1 - brightness.value;
         float a = 1 - alpha.value;
 
-        color = Color.HSVToRGB(h, s, v);
+        saturationImage.color = Color.HSVToRGB(h, 1, v);
+        brightnessImage.color = Color.HSVToRGB(h, s, 1);
 
-        saturationImage.color = color;
-        brightnessImage.color = color;
+        color = Color.HSVToRGB(h, s, v);
         alphaImage.color = color;
 
         color.a = a;
 
         colorPreviewImage.color = color;
 	}
+
+    public void SetColorToPanel(DecalColorDataContainer decalColorData)
+	{
+        radialMovingUIController.SetHandlePosition(decalColorData.hueHandleValue);
+        saturation.value = decalColorData.saturationSliderValue;
+        brightness.value = decalColorData.brightnessSliderValue;
+        alpha.value = decalColorData.alphaSliderValue;
+        UpdateColor();
+    }
+
+    public DecalColorDataContainer GetDecalColorDataContainer()
+	{
+        DecalColorDataContainer container = new DecalColorDataContainer()
+        {
+            hueHandleValue = radialMovingUIController.WorldPosition,
+            saturationSliderValue = saturation.value,
+            brightnessSliderValue = brightness.value,
+            alphaSliderValue = alpha.value,
+            rgbColor = color
+        };
+
+        return container;
+    }
+
+    public void ResetValues()
+	{
+        radialMovingUIController.ResetPosition();
+        saturation.value = 0;
+        brightness.value = 0;
+        alpha.value = 0;
+    }
 
     private void OnChoosingHue()
     {

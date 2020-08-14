@@ -13,7 +13,9 @@ public class DecalScaler : MonoBehaviour
     public float startScale = 1;
 	public Vector2 scaleClamp = new Vector2(0.05f, 10);
 
-	public bool Reflected { get; private set; }
+	public Vector3 Scale { get { return decal.Scale; } }
+
+	public bool Flipped { get; private set; }
 
 	private void Start()
 	{
@@ -34,9 +36,14 @@ public class DecalScaler : MonoBehaviour
 		decal.Scale = defaultScale * currentScale;
 	}
 
-	public void SetScale(float scale)
+	public void MultiplyScale(float multiplier)
 	{
-		decal.Scale = defaultScale * scale;
+		decal.Scale = defaultScale * multiplier;
+	}
+
+	public void SetScale(Vector3 scale)
+	{
+		decal.Scale = scale;
 	}
 
 	public void RevertToDefault()
@@ -44,12 +51,12 @@ public class DecalScaler : MonoBehaviour
 		decal.Scale = defaultScale;
 	}
 
-	public void Reflect()
+	public void Flip()
 	{
 		Vector3 scale = decal.Scale;
 		scale.x *= -1;
 		decal.Scale = scale;
 
-		Reflected = scale.x < 0;
+		Flipped = scale.x < 0;
 	}
 }
