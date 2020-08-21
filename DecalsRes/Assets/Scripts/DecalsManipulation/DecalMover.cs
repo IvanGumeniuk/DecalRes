@@ -1,58 +1,59 @@
 ﻿using PaintIn3D;
+using System.Collections;
 using UnityEngine;
 
 public class DecalMover : MonoBehaviour
 {
 	public P3dHitBetween hitController;
-
-	public Transform pointA;
-	public Transform pointB;
-
-	public Vector3 pointADefaultPosition;
-	public Vector3 pointAStartPosition;
-
-	public Vector3 pointBDefaultPosition;
-	public Vector3 pointBStartPosition;
+	
+	public Vector3 transformDefaultPosition;
+	public Vector3 transformStartMovingPosition;
 
 	public float movingSpeed = 0.5f;
 	public float distanceBetweenPoints;
-
+	
 	private void Start()
 	{
 		if(hitController == null)
 			hitController = GetComponent<P3dHitBetween>();
 
-		pointADefaultPosition = pointA.localPosition;
-		pointBDefaultPosition = pointB.localPosition;
+		transformDefaultPosition = transform.position;
+		transformStartMovingPosition = transform.position;
 	}
 
 	public void StartMoving()
 	{
-		pointAStartPosition = pointA.localPosition;
-		pointBStartPosition = pointB.localPosition;
+		transformStartMovingPosition = transform.position;
 	}
 
-	public void UpdateRaycastPosition(Transform target)
+	public void UpdateRaycastPosition(Transform target, float cameraToTargetDistance)
 	{
-		pointA.position = target.position;
-		pointA.rotation = target.rotation;
-
-		pointB.position = pointA.position + pointA.forward * distanceBetweenPoints;
-		pointB.rotation = target.rotation;
+		transform.position = target.position + transform.forward * cameraToTargetDistance;
+		transform.rotation = target.rotation;
 	}
-
-	public Vector3 movingVector;
 
 	public void Move(Vector3 vector)
 	{
-		movingVector = vector;
-		pointA.localPosition = pointAStartPosition + vector * movingSpeed;
-		pointB.localPosition = pointBStartPosition + vector * movingSpeed;
+		transform.position = transformStartMovingPosition + vector * movingSpeed;
+	}
+
+	public void FinishMoving(bool followsCamera)
+	{
+		if (Vector3.Distance(hitController.Point.position, hitController.PointB.position) < 1)
+		{
+			if (followsCamera)
+			{
+				hitController.Point.position = transformStartMovingPosition;
+			}
+			else
+			{
+				transform.position = transformStartMovingPosition;
+			}
+		}
 	}
 
 	public void RevertToDefault()
 	{
-		pointA.localPosition = pointADefaultPosition;
-		pointB.localPosition = pointBDefaultPosition;
+		transform.position = transformDefaultPosition;
 	}
 }

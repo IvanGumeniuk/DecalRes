@@ -21,9 +21,9 @@ public class CameraController : MonoBehaviour
     public Vector3 defaultPivot;
     public Camera mainCamera;
 
+    public float DistanceToPivot { get { return Mathf.Abs(mainCamera.transform.localPosition.z); } }
     public float Pitch { get { return cameraController.Pitch; }  private set { cameraController.Pitch = value; } }
     public float Yaw { get { return cameraController.Yaw; } private set { cameraController.Yaw = value; } }
-
 
     private int currentlySelectedIndex = -1;
     private int Index
@@ -54,7 +54,9 @@ public class CameraController : MonoBehaviour
     private void OnDestroy()
     {
         if (manipulatorView != null)
+        {
             manipulatorView.OnCameraSidePressed -= ChangeCarSide;
+        }
     }
 
     private void Update()
@@ -77,11 +79,11 @@ public class CameraController : MonoBehaviour
         UpdateCameraPosition(updateCameraPositionWithDelay);
     }
 
-    public void UpdateCameraPosition(bool withDelay = false)
+    public void UpdateCameraPosition(bool withDelay = false, int delayFramesCount = 2)
 	{
 		if (withDelay)
 		{
-            StartCoroutine(UpdateCameraPosition());
+            StartCoroutine(UpdateCameraPosition(delayFramesCount));
             return;
 		}
 
@@ -95,12 +97,12 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void ResetToDefaultPosition(bool withDelay = false)
+    public void ResetToDefaultPosition(bool withDelay = false, int delayFramesCount = 2)
 	{
         if (withDelay)
         {
             targetPivot = null;
-            StartCoroutine(UpdateCameraPosition());
+            StartCoroutine(UpdateCameraPosition(delayFramesCount));
             return;
         }
 
@@ -108,10 +110,12 @@ public class CameraController : MonoBehaviour
         transform.position = defaultPivot;
     }
 
-    private IEnumerator UpdateCameraPosition()
+    private IEnumerator UpdateCameraPosition(int delayFramesCount)
 	{
-        yield return null;
-        yield return null;
+		for (int i = 0; i < delayFramesCount; i++)
+		{
+            yield return null;
+        }
 
         if (targetPivot != null)
         {
@@ -122,6 +126,7 @@ public class CameraController : MonoBehaviour
             transform.position = defaultPivot;
         }
     }
+
 	private void ChangeCarSide()
 	{
         Index++;

@@ -44,7 +44,7 @@ public class StickerDecalUIController : MonoBehaviour
 			stickerCanvasGroups[stickerIndex].alpha = 1;
 		}
 
-		decalsUIController.OnCreatingDecal(DecalType.Sticker, stickerButtons[stickerIndex].GetComponent<RawImage>().texture);
+		decalsUIController.OnCreatingDecal(DecalType.Sticker, stickerIndex, null);
 	}
 
 	public void DeselectButtons()

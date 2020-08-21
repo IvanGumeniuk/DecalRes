@@ -25,6 +25,12 @@ public class CustomPaintingDecalUIController : MonoBehaviour
 			paintingButtons[paintingIndex].GetComponent<CanvasGroup>().alpha = 1;
 			paintingDecal.Color = paintingButtons[paintingIndex].GetComponent<Image>().color;
 			paintingDecal.gameObject.SetActive(true);
+
+			if (paintingIndex == 0)
+				paintingDecal.BlendMode = P3dBlendMode.SubtractiveSoft(Vector4.one);
+			else
+				paintingDecal.BlendMode = P3dBlendMode.AlphaBlend(Vector4.one);
+
 		}
 	}
 }

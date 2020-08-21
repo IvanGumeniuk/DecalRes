@@ -12,6 +12,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public event Action OnFinishRotationAndScaling;
 
     public event Action OnCameraSidePressed;
+    public event Action OnCameraFollowPressed;
     public event Action OnFlipPressed;
     public event Action OnPaintableTargetPressed;
     public event Action OnMirrorPressed;
@@ -24,18 +25,24 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public Button cancelButton;
 
     public Button cameraSideButton;
+    public Button cameraFollowButton;
     public Button flipButton;
     public Button mirrorButton;
     public Button paintableTargetButton;
 
     public Text cameraSideText;
+    public Text cameraFollowText;
     public Text flipText;
     public Text mirrorText;
     public Text paintableTargetText;
         
+    public Image cameraFollowImage;
     public Image reflectionImage;
     public Image mirrorImage;
     public Image paintableTargetImage;
+
+    [SerializeField] private Sprite cameraFollowOnSprite;
+    [SerializeField] private Sprite cameraFollowOffSprite;
 
     [SerializeField] private Sprite flipEnabledSprite;
     [SerializeField] private Sprite flipDisabledSprite;
@@ -130,6 +137,12 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
         cameraSideText.text = "Camera: " + text;
     }
 
+    public void SetCameraFollowStatus(bool follow)
+	{
+        cameraFollowText.text = $"CameraFollow: {follow}";
+        cameraFollowImage.sprite = follow ? cameraFollowOnSprite : cameraFollowOffSprite;
+    }
+
     public void SetFlipButtonStatus(bool flipped)
     {
         flipText.text = $"Flipped: {flipped}";
@@ -142,23 +155,23 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
         mirrorImage.sprite = reflected ? mirrorEnabledSprite : mirrorDisabledSprite;
     }
 
-    public void SetPaintableTargetStatus(DecalPaintModeController.PaintTarget target)
+    public void SetPaintableTargetStatus(DecalPaintableTarget target)
     {
         paintableTargetText.text = $"Target: {target}";
 
         switch (target)
         {
-            case DecalPaintModeController.PaintTarget.Body:
+            case DecalPaintableTarget.Body:
                 {
                     paintableTargetImage.sprite = targetBodySprite;
                     break;
                 }
-            case DecalPaintModeController.PaintTarget.Windows:
+            case DecalPaintableTarget.Windows:
                 {
                     paintableTargetImage.sprite = targetWindowsSprite;
                     break;
                 }
-            case DecalPaintModeController.PaintTarget.BodyAndWindows:
+            case DecalPaintableTarget.BodyAndWindows:
                 {
                     paintableTargetImage.sprite = targetBodyWindowsSprite;
                     break;
@@ -169,6 +182,11 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public void OnCameraSideClick()
 	{
         OnCameraSidePressed?.Invoke();
+	}
+
+    public void OnCameraFollowClick()
+	{
+        OnCameraFollowPressed?.Invoke();
 	}
 
     public void OnFlipClicked()

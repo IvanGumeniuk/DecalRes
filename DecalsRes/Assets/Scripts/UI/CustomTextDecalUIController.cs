@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,8 +9,6 @@ public class CustomTextDecalUIController : MonoBehaviour
 
 	public List<Button> fontButtons = new List<Button>();
 	private List<CanvasGroup> fontCanvasGroups = new List<CanvasGroup>();
-
-	[SerializeField] private List<Font> fonts = new List<Font>();
 
 	[SerializeField] private List<int> textDecalsIDs = new List<int>();
 
@@ -60,7 +57,7 @@ public class CustomTextDecalUIController : MonoBehaviour
 
 		SetActiveInput(true);
 
-		decalsUIController.OnCreatingDecal(DecalType.Text, GetTexture(decalsUIController.ID));
+		decalsUIController.OnCreatingDecal(DecalType.Text, -1, GetTexture(decalsUIController.ID));
 	}
 
 	public void DeselectButtons()
@@ -69,18 +66,11 @@ public class CustomTextDecalUIController : MonoBehaviour
 		{
 			group.alpha = 0.5f;
 		}
-
-		//inputField.gameObject.SetActive(false);
 	}
 
 	public void SetActiveInput(bool active)
 	{
 		inputField.gameObject.SetActive(active);
-	}
-
-	public bool IsTextDecal (int id)
-	{
-        return textDecalsIDs.Contains(id);
 	}
 
     public void OnInputTextChanged(string text)
@@ -93,15 +83,30 @@ public class CustomTextDecalUIController : MonoBehaviour
         if (!IsAnyButtonEnabled)
             return;
 
-		textDecalContoller.CreateNewTexture(id, fonts[selectedFontIndex]);
+		HandleTextureCreating(id, selectedFontIndex);
+	}
 
+	public void SetText(string text, int fontID = -1)
+	{
+		textDecalContoller.SetText(text, fontID);
+	}
+
+	public void HandleTextureCreating(int id, int fontID)
+	{
+		textDecalContoller.CreateNewTexture(id, fontID);
 		textDecalContoller.SetTextureToCamera(id);
-    }
+	}
+
 
     public RenderTexture GetTexture(int id)
     {
         return textDecalContoller.GetTexture(id);
     }
+
+	public void GetTextDecalInfo(int decalID, out int fontID, out string text)
+	{
+		textDecalContoller.GetText(decalID, out fontID, out text);
+	}
 
 	public void OnDecalCreated(int id)
 	{
@@ -119,9 +124,9 @@ public class CustomTextDecalUIController : MonoBehaviour
 
     public void OnDecalChoosen(int id)
     {
-		Debug.Log($"OnDecalChoosen {id}");
         textDecalContoller.SetTextureToCamera(id);
-		inputField.text = textDecalContoller.GetText(id);
+		textDecalContoller.GetText(id, out int fintID, out string text);
+		inputField.text = text;
 		SetActiveInput(true);
 	}
 

@@ -1,4 +1,7 @@
-﻿public enum DecalType 
+﻿using System;
+
+[Serializable]
+public enum DecalType 
 {
 	None,
 	Sticker,

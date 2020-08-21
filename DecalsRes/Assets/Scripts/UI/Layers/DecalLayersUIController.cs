@@ -12,23 +12,16 @@ public class DecalLayersUIController : MonoBehaviour
     [SerializeField] private RectTransform layerItemsHolder;
     [SerializeField] private DecalLayerItem itemPrefab;
 
-    // ID and texture of element will be spawned
-    [SerializeField] private DecalType newItemType;
-    [SerializeField] private int newItemID;
-    [SerializeField] private Texture newItemTexture;
-
     public bool IsLayerSelected { get { return layerItems.Find(x => x.Selected) != null; } }
 
     private void Start()
     {
-        IngameUIManager.Instance.decalsController.OnDecalCreated += OnDecalChosen;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting += OnConfirmDecalCreating;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging += OnConfirmDecalChanging;
     }
 
     private void OnDestroy()
     {
-        IngameUIManager.Instance.decalsController.OnDecalCreated -= OnDecalChosen;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalPainting -= OnConfirmDecalCreating;
         IngameUIManager.Instance.manipulatorViewUIController.OnConfirmDecalChanging -= OnConfirmDecalChanging;
     }
@@ -56,13 +49,6 @@ public class DecalLayersUIController : MonoBehaviour
     private void OnConfirmDecalChanging(bool confirm)
     {
         DeselectItems();
-    }
-
-    private void OnDecalChosen(DecalType type, int id, Texture texture)
-	{
-        newItemType = type;
-        newItemID = id;
-        newItemTexture = texture;
     }
 
     public void OnBeginDrag(DecalLayerItem item)

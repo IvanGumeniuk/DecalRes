@@ -24,14 +24,14 @@ public class DecalCustomTextController : MonoBehaviour
         return renderTextures.ContainsKey(id);
     }
 
-	public void CreateNewTexture(int id, Font font)
+	public void CreateNewTexture(int id, int fontID)
 	{
         if (renderTextures.ContainsKey(id))
             return;
 
         RenderTexture texure = new RenderTexture(textureOrigin);
         texure.Create();
-        renderTextures.Add(id, new RenderTextureInfo(renderText.text, font, texure));
+        renderTextures.Add(id, new RenderTextureInfo(renderText.text, fontID, texure));
     }
 
     public void StoreDecalText(int id)
@@ -51,16 +51,21 @@ public class DecalCustomTextController : MonoBehaviour
             return;
         }
 
-        SetText(renderTextures[id].text, renderTextures[id].font);
+        SetText(renderTextures[id].text, renderTextures[id].fontID);
         SetTexture(renderTextures[id].texture);
     }
 
-    public string GetText(int id)
+    public void GetText(int id, out int fontID, out string text)
 	{
         if (!renderTextures.ContainsKey(id))
-            return string.Empty;
+        {
+            fontID = -1;
+            text = string.Empty;
+            return;
+        }
 
-        return renderTextures[id].text;
+        fontID = renderTextures[id].fontID;
+        text = renderTextures[id].text;
     }
 
     public RenderTexture GetTexture(int id)
@@ -79,10 +84,10 @@ public class DecalCustomTextController : MonoBehaviour
         renderTextures.Remove(id);
     }
 
-    public void SetText(string text, Font font = null)
+    public void SetText(string text, int fontID = -1)
 	{
         renderText.text = text;
-        renderText.font = font == null ? renderText.font : font;
+        renderText.font = fontID == -1 ? renderText.font : SettingsManager.Instance.textDecalSettings.GetFont(fontID);
     }
 
     public void SetTexture(RenderTexture texture)
@@ -93,14 +98,14 @@ public class DecalCustomTextController : MonoBehaviour
     private class RenderTextureInfo
 	{
         public string text;
-        public Font font;
+        public int fontID;
         public RenderTexture texture;
 
-		public RenderTextureInfo(string text, Font font, RenderTexture texture)
+		public RenderTextureInfo(string text, int fontID, RenderTexture texture)
 		{
 			this.text = text;
-            this.font = font;
-			this.texture = texture;
+            this.fontID = fontID;
+            this.texture = texture;
 		}
 	}
 }

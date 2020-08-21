@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DecalsUIController : MonoBehaviour
 {
-	public Action<DecalType, int, Texture> OnDecalCreated;	
-    
+	public Action<DecalType, int, int, Texture> OnDecalCreated;	          // <decalType, decalID, textureID, Texture>
+    public Action<int, int, string> OnTextDecalCreated;           // <decalID, fontID, decalText>
+
     public StickerDecalUIController stickerDecalUIController;
     public CustomPaintingDecalUIController paintingDecalUIController;
     public CustomTextDecalUIController textDecalUIController;
@@ -36,17 +35,19 @@ public class DecalsUIController : MonoBehaviour
 
     private void OnViewOpened(SubviewType view, bool opened)
     {
-        bool stickersViewOpened = (view == SubviewType.Stickers || view == SubviewType.CustomText) && opened;
-        customizationManipulatorView.SetActive(stickersViewOpened);
-       
+        bool canCustomize = (view == SubviewType.Stickers || view == SubviewType.CustomText) && opened;
+        customizationManipulatorView.SetActive(canCustomize);
+        IngameUIManager.Instance.colorPanelUIController.gameObject.SetActive(canCustomize);
+
         DeselectButtons();
         textDecalUIController.SetActiveInput(false);
     }
 
-    public void OnCreatingDecal(DecalType decalType, Texture texture)
+    public void OnCreatingDecal(DecalType decalType, int textureID, Texture texture)
     {
         IngameUIManager.Instance.decalLayers.DeselectItems();
-        OnDecalCreated?.Invoke(decalType, decalID, texture);
+
+        OnDecalCreated?.Invoke(decalType, decalID, textureID, texture);
     }
 
     private void OnConfirmDecal(bool confirm)
@@ -55,6 +56,8 @@ public class DecalsUIController : MonoBehaviour
         if (confirm)
         {
             textDecalUIController.OnDecalCreated(decalID);
+            textDecalUIController.GetTextDecalInfo(decalID, out int fontID, out string text);
+            OnTextDecalCreated?.Invoke(decalID, fontID, text);
 
             decalID++;
         }
@@ -84,13 +87,12 @@ public class DecalsUIController : MonoBehaviour
 		{
 			case DecalType.None:
                 {
-                    //DeselectButtons();
                     textDecalUIController.SetActiveInput(false);   
                     break;
                 }
 			case DecalType.Sticker:
                 {
-                    IngameUIManager.Instance.customizationViewUIController.OpenView(customTextDecalsView, SubviewType.Stickers);
+                    IngameUIManager.Instance.customizationViewUIController.OpenView(stickerDecalsView, SubviewType.Stickers);
                     textDecalUIController.SetActiveInput(false); 
                     break;
                 }

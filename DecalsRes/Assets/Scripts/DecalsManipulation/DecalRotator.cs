@@ -22,6 +22,7 @@ public class DecalRotator : MonoBehaviour
 
 		defaultAngle = decal.Angle;
 	}
+
 	private void Update()
 	{
 		angle = Angle;
@@ -46,6 +47,6 @@ public class DecalRotator : MonoBehaviour
 
 	public void RevertToDefault()
 	{
-		decal.Angle = defaultAngle;
+		decal.Angle = defaultAngle; 
 	}
 }

@@ -41,7 +41,9 @@ public class CustomizationViewUIController : MonoBehaviour
 	public void OpenView(GameObject view, SubviewType subviewType = SubviewType.None)
 	{
 		if (view == null || (LastOpened == subviewType && LastOpened != SubviewType.None))
+		{
 			return;
+		}
 
 		if (openedViews.Count > 0)
 		{
