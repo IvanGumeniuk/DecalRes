@@ -70,6 +70,17 @@ public class DecalLayersUIController : MonoBehaviour
         UpdateLayerItemsPriorities();
     }
 
+    public void ClearLayers()
+	{
+        int count = layerItems.Count;
+
+        for (int i = count - 1; i >= 0; i--)
+		{
+            Destroy(layerItems[i].gameObject);
+            layerItems.RemoveAt(i);
+		}
+	}
+
     public void OnItemSelected(DecalLayerItem item)
 	{
         foreach (var layerItem in layerItems)

@@ -174,9 +174,9 @@ public class DecalManipulationController : MonoBehaviour
 		if (Reflected)
 			UpdateReflection();
 
-		if (Input.GetKeyDown(KeyCode.S))
+		/*if (Input.GetKeyDown(KeyCode.S))
 		{
-			/*var texture = (DecalTexture as Texture2D).EncodeToPNG();
+			var texture = (DecalTexture as Texture2D).EncodeToPNG();
 			Debug.Log($"Length {texture.Length}");
 			Texture2D t = new Texture2D(1, 1);
 			t.LoadImage(texture);
@@ -196,13 +196,19 @@ public class DecalManipulationController : MonoBehaviour
 			//Debug.Log($"{json}");
 
 			//SerializableDecalsColorData.Deserialize(json, decalColorData);
-		}
+		/*}
 
 
-		/*if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			p3DHitBetweenController.MakeShot();
 		}*/
+	}
+
+	public void FinishDecalCustomization(bool finish)
+	{
+		if(finish) 
+			p3DHitBetweenController.MakeShot();
 	}
 
 	public void StopFollowCamera(float pitch, float yaw)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class DecalsPaintController : MonoBehaviour
@@ -12,6 +14,7 @@ public class DecalsPaintController : MonoBehaviour
 	public DecalManipulationController currentActive;
 
 	[SerializeField] private CameraController cameraController;
+	[SerializeField] private PaintablePartsMaterialController paintablePartMaterialController;
 
 	[SerializeField] private bool isMoving;
 	[SerializeField] private bool isRotatingAndScaling;
@@ -26,8 +29,13 @@ public class DecalsPaintController : MonoBehaviour
 
 	private DecalHoldersManager decalHolders;
 
+	private void Awake()
+	{
+		paintablePartMaterialController.Initialize();
+	}
+
 	private void Start()
-    {
+	{
 		decalHolders = DecalHoldersManager.Instance;
 
 		manipulatorUIController = IngameUIManager.Instance.manipulatorViewUIController;
@@ -39,7 +47,7 @@ public class DecalsPaintController : MonoBehaviour
 		decalUIController.OnDecalCreated += OnNewDecalChosen;
 		decalUIController.OnTextDecalCreated += OnTextDecalCreationConfimed;
 
-        decalLayersUIController.OnLayerItemRemoved += OnLayerItemRemoved;
+		decalLayersUIController.OnLayerItemRemoved += OnLayerItemRemoved;
 		decalLayersUIController.OnLayerItemSelected += OnLayerItemSelected;
 		decalLayersUIController.OnLayerItemsPrioritiesChanged += OnLayerItemsPrioritiesChanged;
 
@@ -81,21 +89,70 @@ public class DecalsPaintController : MonoBehaviour
 		}
 	}
 
+
+	private void LocalSerialization()
+	{
+		List<string> buffer = new List<string>();
+
+		for (int i = 0; i < decals.Count; i++)
+		{
+			buffer.Add(decals[i].Serialize());
+		}
+
+		SerializableDecalsData decalsData = new SerializableDecalsData(0, buffer.ToArray());
+		
+		string path = @"d:\MyTest.txt";
+		File.WriteAllText(path, decalsData.Serialize());
+	}
+
+	private IEnumerator LocalDeserialization()
+	{
+		string path = @"d:\MyTest.txt";
+		string deserialized = File.ReadAllText(path);
+		SerializableDecalsData.Deserialize(deserialized, out int vehicleID, out string[] data);
+
+		ClearDecals();
+		decalLayersUIController.ClearLayers();
+
+		if (data.Length != 0)
+		{
+			for (int i = 0; i < data.Length; i++)
+			{
+				var decal = Instantiate(prefab, decalHolders.staticDecalsHolder);
+				decals.Add(decal);
+
+				yield return null;
+
+				decal.Deserialize(data[i]);
+				decalLayersUIController.CreateLayerElement(decal.decalType, decal.id, decal.DecalTexture);
+			}
+		}
+	}
+
+	private IEnumerator GlobalSerialization()
+	{
+		decals.ForEach(x => x.FinishDecalCustomization(true));
+		
+		yield return null;
+
+		paintablePartMaterialController.Serialize();
+	}
+
+	private void GlobalDeserialization()
+	{
+		paintablePartMaterialController.Deserialize();
+	}
+
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.F))
 		{
-			buffer.Clear();
-
-			for (int i = 0; i < decals.Count; i++)
-			{
-				buffer.Add(decals[i].Serialize());
-			}
+			LocalSerialization();
 		}
 
 		if (Input.GetKeyDown(KeyCode.G))
 		{
-			StartCoroutine(test());
+			StartCoroutine(LocalDeserialization());
 		}
 
 		UpdateDynamicReflectedHolderTransform();
@@ -131,26 +188,16 @@ public class DecalsPaintController : MonoBehaviour
 		}
 	}
 
-
-	List<string> buffer = new List<string>();
-	private IEnumerator test()
+	public void ClearDecals()
 	{
-		decals.Clear();
-		if (buffer.Count != 0)
+		int count = decals.Count;
+
+		for (int i = count - 1; i >= 0; i--)
 		{
-			for (int i = 0; i < buffer.Count; i++)
-			{
-				var test = Instantiate(prefab, decalHolders.staticDecalsHolder);
-				decals.Add(test);
-
-				yield return null;
-
-				test.Deserialize(buffer[i]);
-			}
-
+			Destroy(decals[i].gameObject);
+			decals.RemoveAt(i);
 		}
 	}
-
 
 	private void UpdateDynamicReflectedHolderTransform()
 	{
@@ -478,5 +525,30 @@ public class DecalsPaintController : MonoBehaviour
 		manipulatorUIController.OnMirrorPressed -= OnReflection;
 		manipulatorUIController.OnCameraFollowPressed -= ChangeCameraFollowing;
 		manipulatorUIController.OnPaintableTargetPressed -= ChangeTarget;
+	}
+
+	[Serializable]
+	private class SerializableDecalsData
+	{
+		public int vehicleID;
+		public string[] data;
+
+		public SerializableDecalsData(int vehicleID, string[] data)
+		{
+			this.vehicleID = vehicleID;
+			this.data = data;
+		}
+
+		public string Serialize()
+		{
+			return JsonUtility.ToJson(this);
+		}
+
+		public static void Deserialize(string json, out int vehicleID, out string[] data)
+		{
+			var deserialized = JsonUtility.FromJson<SerializableDecalsData>(json);
+			vehicleID = deserialized.vehicleID;
+			data = deserialized.data;
+		}
 	}
 }

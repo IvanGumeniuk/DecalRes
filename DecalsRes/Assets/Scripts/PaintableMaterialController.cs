@@ -4,33 +4,69 @@ using UnityEngine;
 
 public class PaintableMaterialController : MonoBehaviour
 {
+	private const string TEXTURE_PROPERTY_NAME = "_MainTex";
+
+	[SerializeField] private int id;
     [SerializeField] private Material paintableMaterial;
     [SerializeField] private P3dMaterialCloner p3DMaterialCloner;
     [SerializeField] private P3dPaintableTexture p3DPaintableTexture;
     [SerializeField] private MeshRenderer meshRenderer;
 
-	private void Awake()
-	{
-		InitializePaintableMaterial();
-	}
+	[SerializeField] private Material usedMaterial;
 
-	private void InitializePaintableMaterial()
+	public void InitializePaintableMaterial(int id)
 	{
 		meshRenderer = GetComponent<MeshRenderer>();
 	
-		if(meshRenderer == null || paintableMaterial == null || p3DMaterialCloner == null || p3DPaintableTexture == null)
+		/*if(meshRenderer == null || paintableMaterial == null || p3DMaterialCloner == null || p3DPaintableTexture == null)
 		{
 			Debug.Log($"[PaintableMaterialController] You have to set all references correctly");
-		}
+		}*/
 		
 		List<Material> materials = new List<Material>(meshRenderer.materials);
-		materials.Add(paintableMaterial);
+		Material material = new Material(paintableMaterial);
+		materials.Add(material);
 
-		p3DMaterialCloner.Index = materials.Count - 1;
+		//p3DMaterialCloner.Index = materials.Count - 1;
 		p3DPaintableTexture.Slot = new P3dSlot(materials.Count - 1, p3DPaintableTexture.Slot.Name);
 		p3DPaintableTexture.Coord = P3dCoord.Second;
 
 		meshRenderer.materials = materials.ToArray();
+
+		usedMaterial = meshRenderer.materials[meshRenderer.materials.Length - 1];
+
+		SetID(id);
 	}
 
+	public void SetID(int id)
+	{
+		this.id = id;
+	}
+
+	public void SetMaterialTexture(Texture texture)
+	{
+		Material material = new Material(paintableMaterial);
+		material.SetTexture(TEXTURE_PROPERTY_NAME, texture);
+		
+		List<Material> materials = new List<Material>();
+		meshRenderer.GetMaterials(materials);
+
+		materials.RemoveAt(materials.Count - 1);
+		materials.Add(material);
+
+		meshRenderer.materials = materials.ToArray();
+	}
+
+	public byte[] Serialize()
+	{
+		return p3DPaintableTexture.GetPngData();
+
+	}
+
+	public void Deserialize(byte[] textureData)
+	{
+		Texture2D buffer = new Texture2D(1, 1);
+		buffer.LoadImage(textureData);
+		SetMaterialTexture(buffer);
+	}
 }

@@ -114,20 +114,24 @@ MonoBehaviour:
   id: 0
   decalType: 0
   decalTarget: 0
+  decalTextureID: 0
   verticalOffset: 0
   horizontalOffset: 0
   followCameraStoredPitch: 0
   followCameraStoredYaw: 0
   p3DHitBetweenController: {fileID: 4280242848850410133}
   p3DPaintDecalController: {fileID: 4280242848850410136}
+  paintableMaterialController: {fileID: 0}
   decalRotator: {fileID: 4280242848850410134}
   decalScaler: {fileID: 4280242848850410135}
   decalMover: {fileID: 4280242848850410132}
   decalColorData: {fileID: 0}
-  reflected: {fileID: 0}
+  reflectedDecal: {fileID: 0}
   targetlayers:
     serializedVersion: 2
     m_Bits: 256
+  decalText: 
+  decalFontID: 0
 --- !u!114 &4280242848850410133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,8 +263,6 @@ MonoBehaviour:
   transformStartMovingPosition: {x: 0, y: 0, z: 0}
   movingSpeed: 0.005
   distanceBetweenPoints: 20
-  movingVector: {x: 0, y: 0, z: 0}
-  positionBeforeMoving: {x: 0, y: 0, z: 0}
 --- !u!1 &6404948393200700004
 GameObject:
   m_ObjectHideFlags: 0

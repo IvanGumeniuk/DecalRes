@@ -261,7 +261,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: acdaf6ff34fd8cd47b0b3c3c49e4bca3, type: 3}
+  m_Texture: {fileID: 2800000, guid: ed641549b6f73c04081830a09c2ac751, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1740,7 +1740,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 3e1474578e236ad40b655a32584ecb26, type: 3}
+  m_Texture: {fileID: 2800000, guid: 87d05c6659324824da00b9ddbd040069, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -2668,7 +2668,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: cf576ac90d1581f4884caef260ec5e7f, type: 3}
+  m_Texture: {fileID: 2800000, guid: 5b5ec2fef8bf2d34581c5344ac1e16a5, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -5399,7 +5399,6 @@ GameObject:
   - component: {fileID: 511222533}
   - component: {fileID: 511222532}
   - component: {fileID: 511222531}
-  - component: {fileID: 511222530}
   - component: {fileID: 511222529}
   - component: {fileID: 511222528}
   - component: {fileID: 511222527}
@@ -5450,10 +5449,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 511222530}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 511222529}
   meshRenderer: {fileID: 511222532}
+  usedMaterial: {fileID: 0}
 --- !u!114 &511222529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5492,22 +5493,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &511222530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511222525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &511222531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6622,13 +6607,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stickersConfigs:
   - id: 0
-    texture: {fileID: 2800000, guid: c44f0a18d274a024183926d5a6cf2ad2, type: 3}
+    texture: {fileID: 2800000, guid: 421d30a6a70500e4b8d457d0c9fba26c, type: 3}
   - id: 1
-    texture: {fileID: 2800000, guid: cf576ac90d1581f4884caef260ec5e7f, type: 3}
+    texture: {fileID: 2800000, guid: 5b5ec2fef8bf2d34581c5344ac1e16a5, type: 3}
   - id: 2
-    texture: {fileID: 2800000, guid: acdaf6ff34fd8cd47b0b3c3c49e4bca3, type: 3}
+    texture: {fileID: 2800000, guid: ed641549b6f73c04081830a09c2ac751, type: 3}
   - id: 3
-    texture: {fileID: 2800000, guid: 3e1474578e236ad40b655a32584ecb26, type: 3}
+    texture: {fileID: 2800000, guid: 87d05c6659324824da00b9ddbd040069, type: 3}
 --- !u!4 &600258938
 Transform:
   m_ObjectHideFlags: 0
@@ -9988,6 +9973,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 894068703}
+  - component: {fileID: 894068704}
   m_Layer: 0
   m_Name: Drawable
   m_TagString: Untagged
@@ -10014,6 +10000,26 @@ Transform:
   m_Father: {fileID: 4000011656430056}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &894068704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894068702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7cba2d9a1a830546939f6de5a6affbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paintableMaterialControllers:
+  - {fileID: 1265288970240407}
+  - {fileID: 511222528}
+  - {fileID: 1855680013539121}
+  - {fileID: 1433582648508541}
+  - {fileID: 1088070723}
+  - {fileID: 2084613981}
+  - {fileID: 1308239210382269}
 --- !u!1 &894293339
 GameObject:
   m_ObjectHideFlags: 0
@@ -11923,6 +11929,7 @@ MonoBehaviour:
   decals: []
   currentActive: {fileID: 0}
   cameraController: {fileID: 1030334460}
+  paintablePartMaterialController: {fileID: 894068704}
   isMoving: 0
   isRotatingAndScaling: 0
 --- !u!114 &1030334460
@@ -13048,7 +13055,6 @@ GameObject:
   - component: {fileID: 1088070728}
   - component: {fileID: 1088070727}
   - component: {fileID: 1088070726}
-  - component: {fileID: 1088070725}
   - component: {fileID: 1088070724}
   - component: {fileID: 1088070723}
   m_Layer: 0
@@ -13088,10 +13094,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 1088070725}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 1088070724}
   meshRenderer: {fileID: 1088070727}
+  usedMaterial: {fileID: 0}
 --- !u!114 &1088070724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13130,22 +13138,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &1088070725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1088070721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &1088070726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18442,7 +18434,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: c44f0a18d274a024183926d5a6cf2ad2, type: 3}
+  m_Texture: {fileID: 2800000, guid: 421d30a6a70500e4b8d457d0c9fba26c, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -24421,7 +24413,6 @@ GameObject:
   - component: {fileID: 2084613986}
   - component: {fileID: 2084613985}
   - component: {fileID: 2084613984}
-  - component: {fileID: 2084613983}
   - component: {fileID: 2084613982}
   - component: {fileID: 2084613981}
   m_Layer: 8
@@ -24457,10 +24448,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 2084613983}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 2084613982}
   meshRenderer: {fileID: 2084613986}
+  usedMaterial: {fileID: 0}
 --- !u!114 &2084613982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24499,22 +24492,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &2084613983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2084613979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &2084613984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24784,10 +24761,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
   p3DMaterialCloner: {fileID: 2106762471}
   p3DPaintableTexture: {fileID: 2106762470}
   meshRenderer: {fileID: 2106762473}
+  usedMaterial: {fileID: 0}
 --- !u!114 &2106762470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26210,7 +26189,6 @@ GameObject:
   - component: {fileID: 33653045840882944}
   - component: {fileID: 23286743212600924}
   - component: {fileID: 1265288970240410}
-  - component: {fileID: 1265288970240409}
   - component: {fileID: 1265288970240408}
   - component: {fileID: 1265288970240407}
   - component: {fileID: 1265288970240411}
@@ -26234,10 +26212,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 1265288970240409}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 1265288970240408}
   meshRenderer: {fileID: 23286743212600924}
+  usedMaterial: {fileID: 0}
 --- !u!114 &1265288970240408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26276,22 +26256,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &1265288970240409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1265288970240406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &1265288970240410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26306,7 +26270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintable: {fileID: 0}
   includeScale: 1
-  activation: 0
+  activation: 2
   baseScale: {x: 0, y: 0, z: 0}
   otherRenderers: []
   onActivated:
@@ -26452,7 +26416,6 @@ GameObject:
   - component: {fileID: 23584849402632902}
   - component: {fileID: 1308239210382273}
   - component: {fileID: 1308239210382272}
-  - component: {fileID: 1308239210382271}
   - component: {fileID: 1308239210382270}
   - component: {fileID: 1308239210382269}
   m_Layer: 9
@@ -26474,10 +26437,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 1308239210382271}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 1308239210382270}
   meshRenderer: {fileID: 23584849402632902}
+  usedMaterial: {fileID: 0}
 --- !u!114 &1308239210382270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26516,22 +26481,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &1308239210382271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308239210382268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &1308239210382272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26712,7 +26661,6 @@ GameObject:
   - component: {fileID: 23427101035415628}
   - component: {fileID: 1433582648508545}
   - component: {fileID: 1433582648508544}
-  - component: {fileID: 1433582648508543}
   - component: {fileID: 1433582648508542}
   - component: {fileID: 1433582648508541}
   m_Layer: 8
@@ -26734,10 +26682,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 1433582648508543}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 1433582648508542}
   meshRenderer: {fileID: 23427101035415628}
+  usedMaterial: {fileID: 0}
 --- !u!114 &1433582648508542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26776,22 +26726,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &1433582648508543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1433582648508540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &1433582648508544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27550,7 +27484,6 @@ GameObject:
   - component: {fileID: 23216563046919922}
   - component: {fileID: 1855680013539125}
   - component: {fileID: 1855680013539124}
-  - component: {fileID: 1855680013539123}
   - component: {fileID: 1855680013539122}
   - component: {fileID: 1855680013539121}
   m_Layer: 9
@@ -27572,10 +27505,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
-  p3DMaterialCloner: {fileID: 1855680013539123}
+  p3DMaterialCloner: {fileID: 0}
   p3DPaintableTexture: {fileID: 1855680013539122}
   meshRenderer: {fileID: 23216563046919922}
+  usedMaterial: {fileID: 0}
 --- !u!114 &1855680013539122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27614,22 +27549,6 @@ MonoBehaviour:
   activated: 0
   current: {fileID: 0}
   preview: {fileID: 0}
---- !u!114 &1855680013539123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1855680013539120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9986da839a92d2d42975bac1e96cd24c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  activated: 0
-  current: {fileID: 0}
-  original: {fileID: 0}
 --- !u!114 &1855680013539124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27644,7 +27563,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintable: {fileID: 0}
   includeScale: 1
-  activation: 0
+  activation: 2
   baseScale: {x: 0, y: 0, z: 0}
   otherRenderers: []
   onActivated:
@@ -33341,10 +33260,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
   p3DMaterialCloner: {fileID: 1485086248018430571}
   p3DPaintableTexture: {fileID: 1485086248018430570}
   meshRenderer: {fileID: 1499327078238930898}
+  usedMaterial: {fileID: 0}
 --- !u!1 &1485110476912424716
 GameObject:
   m_ObjectHideFlags: 0
@@ -33448,10 +33369,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
   p3DMaterialCloner: {fileID: 1485194680531535372}
   p3DPaintableTexture: {fileID: 1485194680531535371}
   meshRenderer: {fileID: 1499474353370037894}
+  usedMaterial: {fileID: 0}
 --- !u!114 &1485194680531535371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33784,10 +33707,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 308b3af3786185c4486702481e082667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   paintableMaterial: {fileID: 2100000, guid: b071c45d46813054abb0f171948e763e, type: 2}
   p3DMaterialCloner: {fileID: 1485350987803779161}
   p3DPaintableTexture: {fileID: 1485350987803779160}
   meshRenderer: {fileID: 1499418013313070918}
+  usedMaterial: {fileID: 0}
 --- !u!64 &1485350987803779165
 MeshCollider:
   m_ObjectHideFlags: 0
