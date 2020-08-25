@@ -12,17 +12,10 @@ public class PaintableMaterialController : MonoBehaviour
     [SerializeField] private P3dPaintableTexture p3DPaintableTexture;
     [SerializeField] private MeshRenderer meshRenderer;
 
-	[SerializeField] private Material usedMaterial;
-
 	public void InitializePaintableMaterial(int id)
 	{
 		meshRenderer = GetComponent<MeshRenderer>();
-	
-		/*if(meshRenderer == null || paintableMaterial == null || p3DMaterialCloner == null || p3DPaintableTexture == null)
-		{
-			Debug.Log($"[PaintableMaterialController] You have to set all references correctly");
-		}*/
-		
+			
 		List<Material> materials = new List<Material>(meshRenderer.materials);
 		Material material = new Material(paintableMaterial);
 		materials.Add(material);
@@ -32,8 +25,6 @@ public class PaintableMaterialController : MonoBehaviour
 		p3DPaintableTexture.Coord = P3dCoord.Second;
 
 		meshRenderer.materials = materials.ToArray();
-
-		usedMaterial = meshRenderer.materials[meshRenderer.materials.Length - 1];
 
 		SetID(id);
 	}
@@ -60,7 +51,6 @@ public class PaintableMaterialController : MonoBehaviour
 	public byte[] Serialize()
 	{
 		return p3DPaintableTexture.GetPngData();
-
 	}
 
 	public void Deserialize(byte[] textureData)

@@ -61,6 +61,6 @@ public class PaintablePartsMaterialController : MonoBehaviour
 
 	private string GetPath(int id)
 	{
-		return @"d:\MyTest_" + id + ".png";
+		return Application.persistentDataPath + "/DecalsMaterialData" + id + ".png";
 	}
 }

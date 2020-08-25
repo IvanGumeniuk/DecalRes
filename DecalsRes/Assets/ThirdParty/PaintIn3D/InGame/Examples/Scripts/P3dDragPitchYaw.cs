@@ -77,7 +77,7 @@ namespace PaintIn3D.Examples
 		{
 			get
 			{
-				if (Input.GetMouseButton(1) == true)
+				if (Input.GetMouseButton(1) == true || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved))
 				{
 					return true;
 				}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,9 +6,13 @@ using UnityEngine.UI;
 public class CustomizationViewUIController : MonoBehaviour
 {
 	public Action<SubviewType, bool> OnViewOpened;
+	public Action OnSaveClicked;
+	public Action OnLoadClicked;
 
     public Button backButton;
     public Button customizatonButton;
+    public Button saveButton;
+    public Button loadButton;
 
 	public List<GameObject> openedViews = new List<GameObject>();
 	public List<SubviewType> openedViewTypes = new List<SubviewType>();
@@ -21,12 +24,16 @@ public class CustomizationViewUIController : MonoBehaviour
 	private void Awake()
 	{
 		backButton.onClick.AddListener(OnBackPressed);
+		saveButton.onClick.AddListener(OnSavePressed);
+		loadButton.onClick.AddListener(OnLoadPressed);
 		customizatonButton.onClick.AddListener(OnCustomizationButtonPressed);
 	}
 
 	private void OnDestroy()
 	{
 		backButton.onClick.RemoveListener(OnBackPressed);
+		saveButton.onClick.RemoveListener(OnSavePressed);
+		loadButton.onClick.RemoveListener(OnLoadPressed);
 		customizatonButton.onClick.RemoveListener(OnCustomizationButtonPressed);
 	}
 
@@ -85,5 +92,15 @@ public class CustomizationViewUIController : MonoBehaviour
 				backButton.gameObject.SetActive(false);
 			}
 		}
+	}
+
+	private void OnSavePressed()
+	{
+		OnSaveClicked?.Invoke();
+	}
+
+	private void OnLoadPressed()
+	{
+		OnLoadClicked?.Invoke();
 	}
 }

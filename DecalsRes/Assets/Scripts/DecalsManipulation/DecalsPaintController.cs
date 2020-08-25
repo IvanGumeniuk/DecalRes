@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class DecalsPaintController : MonoBehaviour
@@ -54,6 +53,8 @@ public class DecalsPaintController : MonoBehaviour
 		manipulatorUIController.OnConfirmDecalPainting += OnConfirmDecalCreation;
 
 		customizationView.OnViewOpened += OnViewOpened;
+		customizationView.OnSaveClicked += OnSaveButtonPressed;
+		customizationView.OnLoadClicked += OnLoadButtonPressed;
 
 		cameraController.OnCameraPositionChanged += OnCameraPositionChanged;
 	}
@@ -81,6 +82,8 @@ public class DecalsPaintController : MonoBehaviour
 		if (customizationView != null)
 		{
 			customizationView.OnViewOpened -= OnViewOpened;
+			customizationView.OnSaveClicked -= OnSaveButtonPressed;
+			customizationView.OnLoadClicked -= OnLoadButtonPressed;
 		}
 
 		if (cameraController != null)
@@ -100,35 +103,42 @@ public class DecalsPaintController : MonoBehaviour
 		}
 
 		SerializableDecalsData decalsData = new SerializableDecalsData(0, buffer.ToArray());
-		
-		string path = @"d:\MyTest.txt";
+
+		string path = Application.persistentDataPath + "/DecalsData.txt";
 		File.WriteAllText(path, decalsData.Serialize());
+
+		paintablePartMaterialController.Serialize();
 	}
 
 	private IEnumerator LocalDeserialization()
 	{
-		string path = @"d:\MyTest.txt";
+		string path = Application.persistentDataPath + "/DecalsData.txt";
 		string deserialized = File.ReadAllText(path);
-		SerializableDecalsData.Deserialize(deserialized, out int vehicleID, out string[] data);
 
-		ClearDecals();
-		decalLayersUIController.ClearLayers();
-
-		if (data.Length != 0)
+		if (deserialized != null && deserialized.Length > 0)
 		{
-			for (int i = 0; i < data.Length; i++)
+			SerializableDecalsData.Deserialize(deserialized, out int vehicleID, out string[] data);
+
+			ClearDecals();
+			decalLayersUIController.ClearLayers();
+
+			if (data.Length != 0)
 			{
-				var decal = Instantiate(prefab, decalHolders.staticDecalsHolder);
-				decals.Add(decal);
+				for (int i = 0; i < data.Length; i++)
+				{
+					var decal = Instantiate(prefab, decalHolders.staticDecalsHolder);
+					decals.Add(decal);
 
-				yield return null;
+					yield return null;
 
-				decal.Deserialize(data[i]);
-				decalLayersUIController.CreateLayerElement(decal.decalType, decal.id, decal.DecalTexture);
+					decal.Deserialize(data[i]);
+					decalLayersUIController.CreateLayerElement(decal.decalType, decal.id, decal.DecalTexture);
+				}
 			}
 		}
-	}
 
+		paintablePartMaterialController.Deserialize();
+	}
 	private IEnumerator GlobalSerialization()
 	{
 		decals.ForEach(x => x.FinishDecalCustomization(true));
@@ -525,6 +535,16 @@ public class DecalsPaintController : MonoBehaviour
 		manipulatorUIController.OnMirrorPressed -= OnReflection;
 		manipulatorUIController.OnCameraFollowPressed -= ChangeCameraFollowing;
 		manipulatorUIController.OnPaintableTargetPressed -= ChangeTarget;
+	}
+
+	private void OnSaveButtonPressed()
+	{
+		LocalSerialization();
+	}
+
+	private void OnLoadButtonPressed()
+	{
+		StartCoroutine(LocalDeserialization());
 	}
 
 	[Serializable]

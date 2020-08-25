@@ -61,16 +61,36 @@ public class CameraController : MonoBehaviour
 
     private void Update()
 	{
-        if(Application.isEditor && !Application.isPlaying)
+        /*if(Application.isEditor)
 		{
-            cameraPositions.ForEach(x => x.Update());
+            if(!Application.isPlaying)
+                cameraPositions.ForEach(x => x.Update());
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                SefCameraFreeState();
+            }
+        }*/
+
+        if(Input.touchCount > 0)
+		{
+            var touches = Input.touches;
+			for (int i = 0; i < touches.Length; i++)
+			{
+                if(touches[i].phase == TouchPhase.Moved)
+				{
+                    SefCameraFreeState();
+                    break;
+                }
+			}
 		}
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            manipulatorView.SetCameraText("Free");
-            Index = -1;
-        }
+    }
+
+    private void SefCameraFreeState()
+	{
+        manipulatorView.SetCameraText("Free");
+        Index = -1;
     }
 
     public void SetPivot(Transform target, bool updateCameraPositionWithDelay = false)
