@@ -28,6 +28,7 @@ public class DecalLayerItem : MonoBehaviour
 		{
 			selected = value;
 			selectionOutline.gameObject.SetActive(selected);
+			closeButton.gameObject.SetActive(selected);
 		}
 	}
 
@@ -81,16 +82,6 @@ public class DecalLayerItem : MonoBehaviour
 	public void OnEndDrag()
 	{
 		LayoutRebuilder.ForceRebuildLayoutImmediate(content);
-	}
-
-	public void OnPointerEnter()
-	{
-		closeButton.gameObject.SetActive(true);
-	}
-
-	public void OnPointerExit()
-	{
-		closeButton.gameObject.SetActive(false);
 	}
 
 	public void OnRemoveClick()

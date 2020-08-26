@@ -47,13 +47,13 @@ namespace PaintIn3D.Examples
 
 		[System.NonSerialized]
 		private P3dInputManager inputManager = new P3dInputManager();
-
+		public bool rotationBlocked = false;
 		protected virtual void Update()
 		{
 			inputManager.Update(key);
 
 			// Calculate delta
-			if (CanRotate == true && Application.isPlaying == true)
+			if (CanRotate == true && Application.isPlaying == true && !rotationBlocked)
 			{
 				var delta = inputManager.GetAverageDeltaScaled();
 

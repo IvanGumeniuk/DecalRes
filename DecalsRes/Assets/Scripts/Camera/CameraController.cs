@@ -61,7 +61,9 @@ public class CameraController : MonoBehaviour
 
     private void Update()
 	{
-        /*if(Application.isEditor)
+        cameraController.rotationBlocked = !IngameUIManager.Instance.CanRotateCamera;
+
+        if(Application.isEditor)
 		{
             if(!Application.isPlaying)
                 cameraPositions.ForEach(x => x.Update());
@@ -70,9 +72,9 @@ public class CameraController : MonoBehaviour
             {
                 SefCameraFreeState();
             }
-        }*/
-
-        if(Input.touchCount > 0)
+        }
+        else
+        if (Input.touchCount > 0)
 		{
             var touches = Input.touches;
 			for (int i = 0; i < touches.Length; i++)

@@ -8,8 +8,10 @@ public class IngameUIManager : Singleton<IngameUIManager>
     public DecalLayersUIController decalLayers;
 	public ColorPanelUIController colorPanelUIController;
 
+	public bool CanRotateCamera { get { return decalsController.paintingDecalUIController.CanRotateCamera; } }
+
 	private void Start()
 	{
-		Application.targetFrameRate = 60;
+		//Application.targetFrameRate = 60;
 	}
 }

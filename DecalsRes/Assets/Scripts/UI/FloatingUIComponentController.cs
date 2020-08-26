@@ -9,7 +9,6 @@ public class FloatingUIComponentController : MonoBehaviour
 	public Camera mainCamera;
 	private Vector2 defaulPosition;
 
-
 	private void Start()
 	{
 		self = GetComponent<RectTransform>();

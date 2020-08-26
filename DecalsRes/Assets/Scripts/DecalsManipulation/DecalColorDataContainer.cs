@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class DecalColorDataContainer : MonoBehaviour
+public class DecalColorDataContainer
 {
     public Vector3 hueHandleValue;
     public float saturationSliderValue;

@@ -77,6 +77,8 @@ public class DecalManipulationController : MonoBehaviour
 
 	public void SetDecalTarget(DecalPaintableTarget target)
 	{
+		decalTarget = target;
+
 		switch (target)
 		{
 			case DecalPaintableTarget.Body:
@@ -173,36 +175,6 @@ public class DecalManipulationController : MonoBehaviour
 	{
 		if (Reflected)
 			UpdateReflection();
-
-		/*if (Input.GetKeyDown(KeyCode.S))
-		{
-			var texture = (DecalTexture as Texture2D).EncodeToPNG();
-			Debug.Log($"Length {texture.Length}");
-			Texture2D t = new Texture2D(1, 1);
-			t.LoadImage(texture);
-			SetTexture(t);
-			*/
-
-			/*var data = new SerializableDecalsData(this);
-			var json = data.Serialize();
-
-			string path = @"d:\MyTest.txt";
-
-			// This text is added only once to the file.
-			if (!File.Exists(path))
-			{
-				File.WriteAllText(path, json);
-			}*/ 
-			//Debug.Log($"{json}");
-
-			//SerializableDecalsColorData.Deserialize(json, decalColorData);
-		/*}
-
-
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			p3DHitBetweenController.MakeShot();
-		}*/
 	}
 
 	public void FinishDecalCustomization(bool finish)
@@ -273,7 +245,6 @@ public class DecalManipulationController : MonoBehaviour
 	{
 		reflectedDecal = Instantiate(gameObject, reflectedDecalsHolder).GetComponent<DecalManipulationController>();
 		reflectedDecal.gameObject.name = $"{gameObject.name}_Reflected";
-		reflectedDecal.SetDecalTarget(decalTarget);
 
 		UpdateReflection();
 	}
@@ -289,6 +260,7 @@ public class DecalManipulationController : MonoBehaviour
 			reflectedDecal.decalScaler.SetScale(new Vector3(-decalScaler.Scale.x, decalScaler.Scale.y, decalScaler.Scale.z));
 
 		reflectedDecal.decalRotator.SetAngle(-decalRotator.Angle);
+		reflectedDecal.SetDecalTarget(decalTarget);
 	}
 
 	public void StopReflection()
@@ -362,7 +334,6 @@ public class DecalManipulationController : MonoBehaviour
 			id = decal.id;
 			decalType = decal.decalType;
 			decalTarget = decal.decalTarget;
-
 			position = decal.transform.position.ToArray();
 			rotation = decal.transform.rotation.ToArray();
 
@@ -375,8 +346,7 @@ public class DecalManipulationController : MonoBehaviour
 			reflected = decal.Reflected;
 			flipped = decal.Flipped;
 			followsCamera = decal.FollowsCamera;
-
-			//decalTexture = (decal.DecalTexture as Texture2D).EncodeToPNG(); 
+ 
 			decalTextureID = decal.decalTextureID;
 			decalPriority = decal.Priority;
 
@@ -410,11 +380,9 @@ public class DecalManipulationController : MonoBehaviour
 			decal.horizontalOffset = deserialized.horizontalOffset;
 			decal.followCameraStoredPitch = deserialized.followCameraStoredPitch;
 			decal.followCameraStoredYaw = deserialized.followCameraStoredYaw;
-
+			
 			decal.decalText = deserialized.decalText;
 			decal.decalFontID = deserialized.decalFontID;
-
-			
 
 			decal.transform.position = deserialized.position.ToVector3();
 			decal.transform.rotation = deserialized.rotation.ToQuaternion();
@@ -429,13 +397,8 @@ public class DecalManipulationController : MonoBehaviour
 			else
 				decal.SetTexture(deserialized.decalTextureID);
 
-
 			decal.SetPriority(deserialized.decalPriority);
 
-			/*Texture2D buffer = new Texture2D(1, 1);
-			buffer.LoadImage(deserialized.decalTexture);
-			decal.SetTexture(buffer);
-			*/
 			SerializableDecalsRotationData.Deserialize(deserialized.decalsRotationData, decal.decalRotator);			
 			SerializableDecalsMovingData.Deserialize(deserialized.decalsMovingData, decal.decalMover);		
 			SerializableDecalsScaleData.Deserialize(deserialized.decalsScaleData, decal.decalScaler);
@@ -458,6 +421,7 @@ public class DecalManipulationController : MonoBehaviour
 			{
 				decal.StartReflection(DecalHoldersManager.Instance.staticReflectedDecalsHolder);
 				Deserialize(deserialized.reflectedData, decal.reflectedDecal);
+				decal.reflectedDecal.SetDecalTarget(deserialized.decalTarget);
 			}
 		}
 	}
@@ -597,7 +561,7 @@ public class DecalManipulationController : MonoBehaviour
 			brightnessSliderValue = decalColorContainer.brightnessSliderValue;
 			alphaSliderValue = decalColorContainer.alphaSliderValue;
 
-			hueHandleValue = decalColorContainer.rgbColor.ToArray();
+			hueHandleValue = decalColorContainer.hueHandleValue.ToArray();
 			rgbColor = decalColorContainer.rgbColor.ToArray();
 		}
 
@@ -614,7 +578,7 @@ public class DecalManipulationController : MonoBehaviour
 			decalColorContainerReference.brightnessSliderValue = deserialized.brightnessSliderValue;
 			decalColorContainerReference.alphaSliderValue = deserialized.alphaSliderValue;
 
-			decalColorContainerReference.hueHandleValue = deserialized.rgbColor.ToVector3();
+			decalColorContainerReference.hueHandleValue = deserialized.hueHandleValue.ToVector3();
 			decalColorContainerReference.rgbColor = deserialized.rgbColor.ToColor();
 			
 		}

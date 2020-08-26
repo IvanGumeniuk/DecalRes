@@ -7,41 +7,35 @@ public class RadialMovingUIController : MonoBehaviour
 
     [SerializeField] private Transform center;
     [SerializeField] private RectTransform handle;
-   
+    [SerializeField] private RectTransform pointOnCircle;
+
     [SerializeField] private float radius;
     [SerializeField] private Vector3 defaultPosition;
 
-    public Vector3 WorldPosition { get; private set; }
+    public Vector3 WorldPosition { get { return handle.position; } }
 
-	private void Awake()
+    public void Initialize()
 	{
         radius = Vector3.Distance(center.position, handle.position);
-
         defaultPosition = handle.position;
     }
 
     public void SetHandlePosition(Vector3 position)
 	{
-        if (position == Vector3.zero)
-            position = defaultPosition;
-
-        WorldPosition = position;
-        handle.position = WorldPosition;
+        handle.position = position;
 
         OnMoving?.Invoke();
     }
 
     public void ResetPosition()
 	{
-        if(defaultPosition != Vector3.zero)
-            SetHandlePosition(defaultPosition);
+        SetHandlePosition(defaultPosition);
     }
 
 	public void OnDrag()
 	{
 		Vector3 direction = (Input.mousePosition - center.position).normalized;
-        WorldPosition = center.position + direction * radius; 
-        handle.position = WorldPosition;
+        handle.position = center.position + direction * radius; 
 
         OnMoving?.Invoke();
     }

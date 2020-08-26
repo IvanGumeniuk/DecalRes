@@ -10,9 +10,34 @@ public class CustomPaintingDecalUIController : MonoBehaviour
 	public List<Button> paintingButtons = new List<Button>();
 	public P3dPaintSphere paintingDecal;
 
-	private void Update()
+	private float paintingRadius = 0.1f;
+	private float eraiserRadius = 0.2f;
+
+	private bool canRotateCamera = false;
+	public bool CanRotateCamera
 	{
-		paintingDecal.gameObject.SetActive(paintingSubcategoryObject.activeSelf);
+		get { return !paintingSubcategoryObject.activeSelf || canRotateCamera; }
+		private set { canRotateCamera = value; }
+	}
+
+	public Button rotateCameraButton;
+	public Image rotateCameraButtonImage;
+	public Sprite rotateCameraButtonSpriteOn;
+	public Sprite rotateCameraButtonSpriteOff;
+
+	private void Start()
+	{
+		rotateCameraButton.onClick.AddListener(OnRotateCameraButtonClick);
+	}
+
+	private void OnDestroy()
+	{
+		rotateCameraButton.onClick.RemoveListener(OnRotateCameraButtonClick);
+	}
+
+	public void Activate(bool activate)
+	{
+		paintingDecal.gameObject.SetActive(activate);
 	}
 
 	public void OnPaintingButtonsButtonClick(int paintingIndex)
@@ -24,13 +49,27 @@ public class CustomPaintingDecalUIController : MonoBehaviour
 
 			paintingButtons[paintingIndex].GetComponent<CanvasGroup>().alpha = 1;
 			paintingDecal.Color = paintingButtons[paintingIndex].GetComponent<Image>().color;
-			paintingDecal.gameObject.SetActive(true);
+			paintingDecal.gameObject.SetActive(!CanRotateCamera);
 
+			// Eraiser
 			if (paintingIndex == 0)
+			{
 				paintingDecal.BlendMode = P3dBlendMode.SubtractiveSoft(Vector4.one);
+				paintingDecal.Radius = eraiserRadius;
+			}
 			else
+			{
 				paintingDecal.BlendMode = P3dBlendMode.AlphaBlend(Vector4.one);
-
+				paintingDecal.Radius = paintingRadius;
+			}
 		}
+	}
+
+	private void OnRotateCameraButtonClick()
+	{
+		CanRotateCamera = !CanRotateCamera;
+		rotateCameraButtonImage.sprite = CanRotateCamera ? rotateCameraButtonSpriteOn : rotateCameraButtonSpriteOff;
+
+		paintingDecal.gameObject.SetActive(!CanRotateCamera);
 	}
 }

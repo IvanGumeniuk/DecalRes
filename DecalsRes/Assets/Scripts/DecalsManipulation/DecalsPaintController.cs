@@ -57,6 +57,8 @@ public class DecalsPaintController : MonoBehaviour
 		customizationView.OnLoadClicked += OnLoadButtonPressed;
 
 		cameraController.OnCameraPositionChanged += OnCameraPositionChanged;
+
+		colorPanelUIController.radialMovingUIController.Initialize();
 	}
 
 	private void OnDestroy()
@@ -92,85 +94,13 @@ public class DecalsPaintController : MonoBehaviour
 		}
 	}
 
-
-	private void LocalSerialization()
-	{
-		List<string> buffer = new List<string>();
-
-		for (int i = 0; i < decals.Count; i++)
-		{
-			buffer.Add(decals[i].Serialize());
-		}
-
-		SerializableDecalsData decalsData = new SerializableDecalsData(0, buffer.ToArray());
-
-		string path = Application.persistentDataPath + "/DecalsData.txt";
-		File.WriteAllText(path, decalsData.Serialize());
-
-		paintablePartMaterialController.Serialize();
-	}
-
-	private IEnumerator LocalDeserialization()
-	{
-		string path = Application.persistentDataPath + "/DecalsData.txt";
-		string deserialized = File.ReadAllText(path);
-
-		if (deserialized != null && deserialized.Length > 0)
-		{
-			SerializableDecalsData.Deserialize(deserialized, out int vehicleID, out string[] data);
-
-			ClearDecals();
-			decalLayersUIController.ClearLayers();
-
-			if (data.Length != 0)
-			{
-				for (int i = 0; i < data.Length; i++)
-				{
-					var decal = Instantiate(prefab, decalHolders.staticDecalsHolder);
-					decals.Add(decal);
-
-					yield return null;
-
-					decal.Deserialize(data[i]);
-					decalLayersUIController.CreateLayerElement(decal.decalType, decal.id, decal.DecalTexture);
-				}
-			}
-		}
-
-		paintablePartMaterialController.Deserialize();
-	}
-	private IEnumerator GlobalSerialization()
-	{
-		decals.ForEach(x => x.FinishDecalCustomization(true));
-		
-		yield return null;
-
-		paintablePartMaterialController.Serialize();
-	}
-
-	private void GlobalDeserialization()
-	{
-		paintablePartMaterialController.Deserialize();
-	}
-
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			LocalSerialization();
-		}
-
-		if (Input.GetKeyDown(KeyCode.G))
-		{
-			StartCoroutine(LocalDeserialization());
-		}
-
 		UpdateDynamicReflectedHolderTransform();
 
 		if (currentActive == null)		
 			return;
 		
-
 		// Update camera position and rotation for active decal
 		currentActive.SetCameraTransformData(cameraController.Pitch, cameraController.Yaw);
 
@@ -230,6 +160,7 @@ public class DecalsPaintController : MonoBehaviour
 			decals.Add(currentActive);
 			currentActive.SetParent(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder);
 			decalLayersUIController.CreateLayerElement(currentActive.decalType, currentActive.id, currentActive.DecalTexture);
+			colorPanelUIController.SetColorToPanel(currentActive.decalColorData);
 		}
 		else
 		{
@@ -243,7 +174,9 @@ public class DecalsPaintController : MonoBehaviour
 		cameraController.ResetToDefaultPosition();
 		manipulatorUIController.floatingUIController.SetTarget(null);
 		colorPanelUIController.ResetValues();
+
 		colorPanelUIController.gameObject.SetActive(false);
+		decalUIController.customizationManipulatorView.SetActive(false);
 
 		Unsubscribe();
 	}
@@ -264,6 +197,8 @@ public class DecalsPaintController : MonoBehaviour
 			
 			cameraController.SetPivot(currentActive.HitPoint, true);
 			manipulatorUIController.floatingUIController.SetTarget(currentActive.HitPoint);
+
+			decalUIController.customizationManipulatorView.SetActive(true);
 			colorPanelUIController.gameObject.SetActive(true);
 
 			Subscribe();
@@ -320,9 +255,11 @@ public class DecalsPaintController : MonoBehaviour
 				StartCoroutine(SetParentWithDelay(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder));
 			}
 
-			colorPanelUIController.SetColorToPanel(currentActive.decalColorData);
+			decalUIController.customizationManipulatorView.SetActive(true);
 			colorPanelUIController.gameObject.SetActive(true);
-		
+			colorPanelUIController.SetColorToPanel(currentActive.decalColorData);
+
+
 			decalUIController.DecalChoosen(currentActive.decalType, currentActive.id);
 
 			Subscribe();
@@ -333,6 +270,7 @@ public class DecalsPaintController : MonoBehaviour
 			manipulatorUIController.floatingUIController.SetTarget(null);
 			colorPanelUIController.ResetValues();
 			colorPanelUIController.gameObject.SetActive(false);
+			decalUIController.customizationManipulatorView.SetActive(false);
 
 			decalUIController.DecalChoosen(DecalType.None, -1);
 		}
@@ -359,8 +297,8 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnViewOpened(SubviewType view, bool opened)
 	{
-		if(!decalLayersUIController.IsLayerSelected || view == SubviewType.CustomPainting)
-			OnConfirmDecalCreation(false);
+		if (!decalLayersUIController.IsLayerSelected || view == SubviewType.CustomPainting)
+			ChangeCurrent(-1);
 	}
 
 	private void OnLayerItemSelected(int id)
@@ -537,6 +475,66 @@ public class DecalsPaintController : MonoBehaviour
 		manipulatorUIController.OnPaintableTargetPressed -= ChangeTarget;
 	}
 
+
+	private void LocalSerialization()
+	{
+		List<string> buffer = new List<string>();
+
+		for (int i = 0; i < decals.Count; i++)
+		{
+			buffer.Add(decals[i].Serialize());
+		}
+
+		SerializableDecalsData decalsData = new SerializableDecalsData(0, buffer.ToArray());
+
+		string path = Application.persistentDataPath + "/DecalsData.txt";
+		File.WriteAllText(path, decalsData.Serialize());
+
+		paintablePartMaterialController.Serialize(0);
+	}
+
+	private IEnumerator LocalDeserialization()
+	{
+		paintablePartMaterialController.Deserialize();
+
+		string path = Application.persistentDataPath + "/DecalsData.txt";
+		string deserialized = File.ReadAllText(path);
+
+		if (deserialized != null && deserialized.Length > 0)
+		{
+			SerializableDecalsData.Deserialize(deserialized, out int vehicleID, out string[] data);
+
+			ClearDecals();
+			decalLayersUIController.ClearLayers();
+
+			if (data.Length != 0)
+			{
+				for (int i = 0; i < data.Length; i++)
+				{
+					var decal = Instantiate(prefab, decalHolders.staticDecalsHolder);
+					decals.Add(decal);
+
+					yield return null;
+
+					decal.Deserialize(data[i]);
+					decalLayersUIController.CreateLayerElement(decal.decalType, decal.id, decal.DecalTexture);
+				}
+			}
+		}
+	}
+	private IEnumerator GlobalSerialization()
+	{
+		decals.ForEach(x => x.FinishDecalCustomization(true));
+
+		yield return null;
+
+		paintablePartMaterialController.Serialize(0);
+	}
+
+	private void GlobalDeserialization()
+	{
+		paintablePartMaterialController.Deserialize();
+	}
 	private void OnSaveButtonPressed()
 	{
 		LocalSerialization();

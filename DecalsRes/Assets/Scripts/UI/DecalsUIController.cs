@@ -35,9 +35,11 @@ public class DecalsUIController : MonoBehaviour
 
     private void OnViewOpened(SubviewType view, bool opened)
     {
-        bool canCustomize = (view == SubviewType.Stickers || view == SubviewType.CustomText) && opened;
-        customizationManipulatorView.SetActive(canCustomize);
-        IngameUIManager.Instance.colorPanelUIController.gameObject.SetActive(canCustomize);
+		if (opened)
+		{
+            if (view != SubviewType.CustomPainting)
+                paintingDecalUIController.Activate(false);
+        }
 
         DeselectButtons();
         textDecalUIController.SetActiveInput(false);
@@ -81,6 +83,7 @@ public class DecalsUIController : MonoBehaviour
         textDecalUIController.OnDecalRemoved(id);
     }
 
+    // New decal chosen or layer item selected 
     public void DecalChoosen(DecalType type, int id)
 	{
 		switch (type)
@@ -93,13 +96,15 @@ public class DecalsUIController : MonoBehaviour
 			case DecalType.Sticker:
                 {
                     IngameUIManager.Instance.customizationViewUIController.OpenView(stickerDecalsView, SubviewType.Stickers);
-                    textDecalUIController.SetActiveInput(false); 
+                    textDecalUIController.SetActiveInput(false);
+
                     break;
                 }
 			case DecalType.Text:
                 {
                     IngameUIManager.Instance.customizationViewUIController.OpenView(customTextDecalsView, SubviewType.CustomText);
-                    textDecalUIController.OnDecalChoosen(id); 
+                    textDecalUIController.OnDecalChoosen(id);
+
                     break;
                 }
 			default:

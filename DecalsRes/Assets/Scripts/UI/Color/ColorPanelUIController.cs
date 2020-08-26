@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ColorPanelUIController : MonoBehaviour
@@ -16,8 +18,14 @@ public class ColorPanelUIController : MonoBehaviour
     public Slider brightness;
     public Slider alpha;
 
+    private bool firstStart = true;
 
-    private void Start()
+	private void OnDisable()
+	{
+        firstStart = true;
+	}
+
+	private void Start()
     {
         radialMovingUIController.OnMoving += OnChoosingHue;
         saturation.onValueChanged.AddListener(OnColorModifierValueChanged);
@@ -53,8 +61,17 @@ public class ColorPanelUIController : MonoBehaviour
         alphaImage.color = color;
 
         color.a = a;
-
         colorPreviewImage.color = color;
+    }
+
+    private IEnumerator WithDelay(int framesCount, Action method)
+	{
+		for (int i = 0; i < framesCount; i++)
+		{
+			yield return null;
+		}
+        firstStart = false;
+        method?.Invoke();
 	}
 
     public void SetColorToPanel(DecalColorDataContainer decalColorData)
@@ -63,7 +80,11 @@ public class ColorPanelUIController : MonoBehaviour
         saturation.value = decalColorData.saturationSliderValue;
         brightness.value = decalColorData.brightnessSliderValue;
         alpha.value = decalColorData.alphaSliderValue;
-        UpdateColor();
+
+        if (firstStart)
+            StartCoroutine(WithDelay(1, UpdateColor));
+        else
+            UpdateColor();
     }
 
     public DecalColorDataContainer GetDecalColorDataContainer()

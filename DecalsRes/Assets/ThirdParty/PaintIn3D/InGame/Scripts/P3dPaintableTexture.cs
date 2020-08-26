@@ -838,9 +838,9 @@ namespace PaintIn3D
 		/// <summary>This allows you to manually activate this paintable texture.
 		/// NOTE: This will automatically be called by the associated P3dPaintable component when it activates.</summary>
 		[ContextMenu("Activate")]
-		public void Activate()
+		public void Activate(bool force = false)
 		{
-			if (activated == false)
+			if (activated == false || force)
 			{
 				UpdateMaterial();
 

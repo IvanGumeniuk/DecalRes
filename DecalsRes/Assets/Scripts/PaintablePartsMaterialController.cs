@@ -16,13 +16,13 @@ public class PaintablePartsMaterialController : MonoBehaviour
 		}
 	}
 
-    public Dictionary<int, byte[]> Serialize()
+    public Dictionary<int, byte[]> Serialize(int vehicleID)
 	{
 		serializedData.Clear();
 		for (int i = 0; i < paintableMaterialControllers.Count; i++)
 		{
 			int id = i;
-			byte[] data = paintableMaterialControllers[i].Serialize();
+			byte[] data = paintableMaterialControllers[i].Serialize($"{vehicleID}");
 
 			serializedData.Add(id, data);
 

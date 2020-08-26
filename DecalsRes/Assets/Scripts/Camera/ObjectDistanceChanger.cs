@@ -22,30 +22,27 @@ public class ObjectDistanceChanger : MonoBehaviour
 
     void Update()
     {
-        /*if (Application.isEditor)
+        if (Input.touches.Length > 1)
         {
-            zoom += Input.mouseScrollDelta.y;     
-		}
-		else*/
-		{
-            if(Input.touches.Length > 1)
-			{
-                var touches = Input.touches;
-                difference = 0;
-                if (Input.GetTouch(1).phase == TouchPhase.Began)
-				{
-                    startDistance = Vector3.Distance(touches[0].position, touches[1].position) * multiplier;
-                }
-
-                if (Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(1).phase == TouchPhase.Moved)
-                {
-					float distance = Vector3.Distance(touches[0].position, touches[1].position) * multiplier;
-                    difference = distance - startDistance;
-                    startDistance = distance;
-                    zoom += Mathf.Clamp(difference, -1, 1);
-                }
+            var touches = Input.touches;
+            difference = 0;
+            if (Input.GetTouch(1).phase == TouchPhase.Began)
+            {
+                startDistance = Vector3.Distance(touches[0].position, touches[1].position) * multiplier;
             }
-		}
+
+            if (Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(1).phase == TouchPhase.Moved)
+            {
+                float distance = Vector3.Distance(touches[0].position, touches[1].position) * multiplier;
+                difference = distance - startDistance;
+                startDistance = distance;
+                zoom += Mathf.Clamp(difference, -1, 1);
+            }
+        }
+        else
+        {
+            zoom += Input.mouseScrollDelta.y;
+        }
 
         zoom = Mathf.Clamp(zoom, distanceClamp.x, distanceClamp.y);
 
