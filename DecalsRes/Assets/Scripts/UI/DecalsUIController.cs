@@ -10,9 +10,9 @@ public class DecalsUIController : MonoBehaviour
     public CustomPaintingDecalUIController paintingDecalUIController;
     public CustomTextDecalUIController textDecalUIController;
 
-    public GameObject customizationManipulatorView;
-    public GameObject stickerDecalsView;
-    public GameObject customTextDecalsView;
+    public SubcategoryUIView customizationManipulatorView;
+    public SubcategoryUIView stickerDecalsView;
+    public SubcategoryUIView customTextDecalsView;
 
     // Unique ID for each sticker. 
     [SerializeField] private int decalID = 0;
@@ -48,7 +48,6 @@ public class DecalsUIController : MonoBehaviour
     public void OnCreatingDecal(DecalType decalType, int textureID, Texture texture)
     {
         IngameUIManager.Instance.decalLayers.DeselectItems();
-
         OnDecalCreated?.Invoke(decalType, decalID, textureID, texture);
     }
 
@@ -95,14 +94,14 @@ public class DecalsUIController : MonoBehaviour
                 }
 			case DecalType.Sticker:
                 {
-                    IngameUIManager.Instance.customizationViewUIController.OpenView(stickerDecalsView, SubviewType.Stickers);
+                    IngameUIManager.Instance.customizationViewUIController.OpenView(stickerDecalsView.animationUIController, SubviewType.Stickers);
                     textDecalUIController.SetActiveInput(false);
 
                     break;
                 }
 			case DecalType.Text:
                 {
-                    IngameUIManager.Instance.customizationViewUIController.OpenView(customTextDecalsView, SubviewType.CustomText);
+                    IngameUIManager.Instance.customizationViewUIController.OpenView(customTextDecalsView.animationUIController, SubviewType.CustomText);
                     textDecalUIController.OnDecalChoosen(id);
 
                     break;

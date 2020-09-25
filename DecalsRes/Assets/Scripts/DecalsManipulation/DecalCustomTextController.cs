@@ -19,11 +19,6 @@ public class DecalCustomTextController : MonoBehaviour
         renderText.text = defaultText;
     }
 
-    public bool HasTextDecal(int id)
-	{
-        return renderTextures.ContainsKey(id);
-    }
-
 	public void CreateNewTexture(int id, int fontID)
 	{
         if (renderTextures.ContainsKey(id))
@@ -42,14 +37,17 @@ public class DecalCustomTextController : MonoBehaviour
         renderTextures[id].text = renderText.text;
     }
 
-    public void SetTextureToCamera(int id)
-	{
+    public void SetTextureToCamera(int id, int fontID)
+	{        
         if (!renderTextures.ContainsKey(id))
         {
             SetTexture(textureOrigin);
             SetText(defaultText);
             return;
         }
+
+        if (renderTextures[id].fontID != fontID)
+            renderTextures[id].fontID = fontID;
 
         SetText(renderTextures[id].text, renderTextures[id].fontID);
         SetTexture(renderTextures[id].texture);
@@ -86,6 +84,7 @@ public class DecalCustomTextController : MonoBehaviour
 
     public void SetText(string text, int fontID = -1)
 	{
+		//Debug.Log($"SetText {text} {fontID}");
         renderText.text = text;
         renderText.font = fontID == -1 ? renderText.font : SettingsManager.Instance.textDecalSettings.GetFont(fontID);
     }

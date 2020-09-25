@@ -51,7 +51,6 @@ namespace PaintIn3D.Examples
 		protected virtual void Update()
 		{
 			inputManager.Update(key);
-
 			// Calculate delta
 			if (CanRotate == true && Application.isPlaying == true && !rotationBlocked)
 			{

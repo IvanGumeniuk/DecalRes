@@ -8,18 +8,19 @@ public class CustomizationViewUIController : MonoBehaviour
 	public Action<SubviewType, bool> OnViewOpened;
 	public Action OnSaveClicked;
 	public Action OnLoadClicked;
+	public Action OnBackClicked;
 
     public Button backButton;
     public Button customizatonButton;
     public Button saveButton;
     public Button loadButton;
 
-	public List<GameObject> openedViews = new List<GameObject>();
+	public List<OpenAnimationUIController> openedViews = new List<OpenAnimationUIController>();
 	public List<SubviewType> openedViewTypes = new List<SubviewType>();
 
 	public SubviewType LastOpened { get { return openedViewTypes.Count > 0 ? openedViewTypes[openedViewTypes.Count - 1] : SubviewType.None; } }
 
-	public GameObject categoryUI;
+	public SubcategoryUIView categoryUI;
 
 	private void Awake()
 	{
@@ -39,13 +40,13 @@ public class CustomizationViewUIController : MonoBehaviour
 
 	private void OnCustomizationButtonPressed()
 	{
-		OpenView(categoryUI);
+		OpenView(categoryUI.animationUIController, SubviewType.CustomizationCategory);
 		IngameUIManager.Instance.decalLayers.gameObject.SetActive(true);
 		customizatonButton.interactable = false;
 		backButton.gameObject.SetActive(true);
 	}
 
-	public void OpenView(GameObject view, SubviewType subviewType = SubviewType.None)
+	public void OpenView(OpenAnimationUIController view, SubviewType subviewType = SubviewType.None)
 	{
 		if (view == null || (LastOpened == subviewType && LastOpened != SubviewType.None))
 		{
@@ -54,29 +55,39 @@ public class CustomizationViewUIController : MonoBehaviour
 
 		if (openedViews.Count > 0)
 		{
-			bool disablePrevious = LastOpened == SubviewType.Stickers || LastOpened == SubviewType.CustomPainting || LastOpened == SubviewType.CustomText;
+			bool disablePrevious = LastOpened == SubviewType.Stickers 
+				|| LastOpened == SubviewType.CustomPainting 
+				|| LastOpened == SubviewType.CustomText
+				|| LastOpened == SubviewType.CustomizationCategory;
+
+			bool keepInHistory = LastOpened == SubviewType.CustomizationCategory;
 
 			if (disablePrevious)
 			{
-				openedViews[openedViews.Count - 1].SetActive(false);
+				openedViews[openedViews.Count - 1].Close();
 
-				openedViews.RemoveAt(openedViews.Count - 1);
-				openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
+				if (!keepInHistory)
+				{
+					openedViews.RemoveAt(openedViews.Count - 1);
+					openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
+				}
 			}
 		}
 
 		openedViews.Add(view);
 		openedViewTypes.Add(subviewType);
 
-		openedViews[openedViews.Count - 1].SetActive(true);
+		openedViews[openedViews.Count - 1].Open();
 		OnViewOpened?.Invoke(subviewType, true);
 	}
 
 	private void OnBackPressed()
 	{
+		OnBackClicked?.Invoke();
+
 		if (openedViews.Count > 0)
 		{
-			openedViews[openedViews.Count - 1].SetActive(false);
+			openedViews[openedViews.Count - 1].Close();
 
 			OnViewOpened?.Invoke(openedViewTypes[openedViewTypes.Count - 1], false);
 
@@ -84,7 +95,7 @@ public class CustomizationViewUIController : MonoBehaviour
 			openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
 
 			if (openedViews.Count > 0)
-				openedViews[openedViews.Count - 1].SetActive(true);
+				openedViews[openedViews.Count - 1].Open();
 			else
 			{
 				customizatonButton.interactable = true;

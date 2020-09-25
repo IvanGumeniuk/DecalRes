@@ -17,7 +17,8 @@ public class OpenAnimationUIController : MonoBehaviour
     public Vector2 openedPosition;
     public Vector2 closedPosition;
 
-    public float duration;
+    public float speed;
+    public float animationDuration;
 
     public bool isAnimating;
     private float defaultDistance;
@@ -33,12 +34,10 @@ public class OpenAnimationUIController : MonoBehaviour
 
 			if (isOpened)
 			{
-				Debug.Log($"{target.gameObject.name} opened");
                 OnOpened?.Invoke(this);
 			}
 			else
 			{
-				Debug.Log($"{target.gameObject.name} closed");
                 OnClosed?.Invoke(this);
             }
         }
@@ -49,22 +48,13 @@ public class OpenAnimationUIController : MonoBehaviour
         defaultDistance = Vector2.Distance(target.anchoredPosition, IsOpened ? closedPosition : openedPosition);
     }
 
-	private void Update()
-	{
-        if (Input.GetKeyDown(KeyCode.Q))
-            Open(); 
-        
-        if (Input.GetKeyDown(KeyCode.W))
-            Close();
-	}
-
 	public void Open()
 	{
-        if (target == null)
+        if (target == null || isOpened)
             return;
 
         float distanceFromTargetPosition = Vector2.Distance(target.anchoredPosition, openedPosition);
-        float animationDuration = duration * (distanceFromTargetPosition / defaultDistance);
+        animationDuration = speed * (distanceFromTargetPosition / defaultDistance);
         
         CheckAnimationPlaying();
         animationCoroutine = StartCoroutine(Animate(target.anchoredPosition, openedPosition, animationDuration));
@@ -72,11 +62,11 @@ public class OpenAnimationUIController : MonoBehaviour
 
     public void Close()
 	{
-        if (target == null)
+        if (target == null || !isOpened)
             return;
 
         float distanceFromTargetPosition = Vector2.Distance(target.anchoredPosition, closedPosition);
-        float animationDuration = duration * (distanceFromTargetPosition / defaultDistance);
+        animationDuration = speed * (distanceFromTargetPosition / defaultDistance);
 
         CheckAnimationPlaying();
         animationCoroutine = StartCoroutine(Animate(target.anchoredPosition, closedPosition, animationDuration));
@@ -103,7 +93,11 @@ public class OpenAnimationUIController : MonoBehaviour
             float timeSince = Time.time - timeActionStarted;
             float percentage = timeSince / duration;
 
-            target.anchoredPosition = Vector2.Lerp(from, to, percentage);
+            var position = Vector2.Lerp(from, to, percentage);
+            
+            // Check is not NAN
+            if(position.x == position.x)
+                target.anchoredPosition = Vector2.Lerp(from, to, percentage);
 
             actionFinished = Time.time - timeActionStarted > duration;
             yield return null;

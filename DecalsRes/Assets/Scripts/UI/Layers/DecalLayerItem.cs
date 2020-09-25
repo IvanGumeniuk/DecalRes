@@ -13,9 +13,9 @@ public class DecalLayerItem : MonoBehaviour
 
 	private DecalLayersUIController layersUIController;
 
-	public int ID;// { get; set; }
-	public int Priority;// { get; set; }
-	public DecalType DecalType;// { get; set; }
+	public int ID { get; set; }
+	public int Priority { get; set; }
+	public DecalType DecalType { get; set; }
 
 	public bool selected;
 	public bool Selected 

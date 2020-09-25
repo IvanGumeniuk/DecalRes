@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class DecalsPaintController : MonoBehaviour
 {
+	private const int NONE = -1;
+
+	public Action OnSaved;
+	public Action OnLoaded;
+
     [SerializeField] private DecalManipulationController prefab;			// Decal prefab
     [SerializeField] private List<DecalManipulationController> decals = new List<DecalManipulationController>();
 
@@ -55,6 +60,7 @@ public class DecalsPaintController : MonoBehaviour
 		customizationView.OnViewOpened += OnViewOpened;
 		customizationView.OnSaveClicked += OnSaveButtonPressed;
 		customizationView.OnLoadClicked += OnLoadButtonPressed;
+		customizationView.OnBackClicked += OnBackButtonClicked;
 
 		cameraController.OnCameraPositionChanged += OnCameraPositionChanged;
 
@@ -86,6 +92,7 @@ public class DecalsPaintController : MonoBehaviour
 			customizationView.OnViewOpened -= OnViewOpened;
 			customizationView.OnSaveClicked -= OnSaveButtonPressed;
 			customizationView.OnLoadClicked -= OnLoadButtonPressed;
+			customizationView.OnBackClicked -= OnBackButtonClicked;
 		}
 
 		if (cameraController != null)
@@ -153,7 +160,6 @@ public class DecalsPaintController : MonoBehaviour
 			manipulatorUIController.floatingUIController.SetTarget(null);
 			return;
 		}
-		
 
 		if (confirm)
 		{
@@ -176,7 +182,7 @@ public class DecalsPaintController : MonoBehaviour
 		colorPanelUIController.ResetValues();
 
 		colorPanelUIController.gameObject.SetActive(false);
-		decalUIController.customizationManipulatorView.SetActive(false);
+		decalUIController.customizationManipulatorView.animationUIController.Close();
 
 		Unsubscribe();
 	}
@@ -189,6 +195,12 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnNewDecalChosen(DecalType decalType, int id, int textureID, Texture texture)
 	{
+		if (currentActive != null && !decals.Contains(currentActive))
+		{
+			OnConfirmDecalCreation(false);
+			return;
+		}
+
 		if (currentActive == null)
 		{
 			currentActive = Instantiate(prefab, decalHolders.dynamicDecalsHolder);
@@ -198,7 +210,7 @@ public class DecalsPaintController : MonoBehaviour
 			cameraController.SetPivot(currentActive.HitPoint, true);
 			manipulatorUIController.floatingUIController.SetTarget(currentActive.HitPoint);
 
-			decalUIController.customizationManipulatorView.SetActive(true);
+			decalUIController.customizationManipulatorView.animationUIController.Open();
 			colorPanelUIController.gameObject.SetActive(true);
 
 			Subscribe();
@@ -255,7 +267,7 @@ public class DecalsPaintController : MonoBehaviour
 				StartCoroutine(SetParentWithDelay(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder));
 			}
 
-			decalUIController.customizationManipulatorView.SetActive(true);
+			decalUIController.customizationManipulatorView.animationUIController.Open();
 			colorPanelUIController.gameObject.SetActive(true);
 			colorPanelUIController.SetColorToPanel(currentActive.decalColorData);
 
@@ -270,9 +282,9 @@ public class DecalsPaintController : MonoBehaviour
 			manipulatorUIController.floatingUIController.SetTarget(null);
 			colorPanelUIController.ResetValues();
 			colorPanelUIController.gameObject.SetActive(false);
-			decalUIController.customizationManipulatorView.SetActive(false);
+			decalUIController.customizationManipulatorView.animationUIController.Close();
 
-			decalUIController.DecalChoosen(DecalType.None, -1);
+			decalUIController.DecalChoosen(DecalType.None, NONE);
 		}
 	}
 
@@ -297,8 +309,14 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnViewOpened(SubviewType view, bool opened)
 	{
+		if (currentActive != null && !decals.Contains(currentActive))
+		{
+			OnConfirmDecalCreation(false);
+		}
+
 		if (!decalLayersUIController.IsLayerSelected || view == SubviewType.CustomPainting)
-			ChangeCurrent(-1);
+			ChangeCurrent(NONE);
+
 	}
 
 	private void OnLayerItemSelected(int id)
@@ -475,7 +493,25 @@ public class DecalsPaintController : MonoBehaviour
 		manipulatorUIController.OnPaintableTargetPressed -= ChangeTarget;
 	}
 
+	private void OnSaveButtonPressed()
+	{
+		LocalSerialization();
+	}
 
+	private void OnLoadButtonPressed()
+	{
+		StartCoroutine(LocalDeserialization());
+	}
+
+	private void OnBackButtonClicked()
+	{
+		if (currentActive != null && !decals.Contains(currentActive))
+		{
+			OnConfirmDecalCreation(false);
+		}
+	}
+
+	// Use it to store data of vehicle locally
 	private void LocalSerialization()
 	{
 		List<string> buffer = new List<string>();
@@ -491,8 +527,11 @@ public class DecalsPaintController : MonoBehaviour
 		File.WriteAllText(path, decalsData.Serialize());
 
 		paintablePartMaterialController.Serialize(0);
+
+		OnSaved?.Invoke();
 	}
 
+	// Local data deserialization
 	private IEnumerator LocalDeserialization()
 	{
 		paintablePartMaterialController.Deserialize();
@@ -521,28 +560,23 @@ public class DecalsPaintController : MonoBehaviour
 				}
 			}
 		}
+
+		OnLoaded?.Invoke();
 	}
-	private IEnumerator GlobalSerialization()
+
+	// Texture materials serialization. Send it via network
+	private IEnumerator GlobalSerialization(int vehicleID)
 	{
 		decals.ForEach(x => x.FinishDecalCustomization(true));
 
 		yield return null;
 
-		paintablePartMaterialController.Serialize(0);
+		paintablePartMaterialController.Serialize(vehicleID);
 	}
 
-	private void GlobalDeserialization()
+	private void GlobalDeserialization(int vehicleID)
 	{
 		paintablePartMaterialController.Deserialize();
-	}
-	private void OnSaveButtonPressed()
-	{
-		LocalSerialization();
-	}
-
-	private void OnLoadButtonPressed()
-	{
-		StartCoroutine(LocalDeserialization());
 	}
 
 	[Serializable]

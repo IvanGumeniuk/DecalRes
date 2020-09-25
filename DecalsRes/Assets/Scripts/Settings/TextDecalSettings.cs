@@ -11,4 +11,12 @@ public class TextDecalSettings : MonoBehaviour
 		var font = fonts.Find(x => x.id == id);
 		return font == null ? null : font.font;
 	}
+
+	public List<int> GetFontsIDs()
+	{
+		List<int> ids = new List<int>();
+		fonts.ForEach(x => ids.Add(x.id));
+
+		return ids;
+	}
 }

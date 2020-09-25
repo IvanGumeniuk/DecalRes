@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CustomPaintingDecalUIController : MonoBehaviour
 {
-	public GameObject paintingSubcategoryObject;
+	public SubcategoryUIView paintingSubcategoryObject;
 
 	public List<Button> paintingButtons = new List<Button>();
 	public P3dPaintSphere paintingDecal;
@@ -16,7 +16,7 @@ public class CustomPaintingDecalUIController : MonoBehaviour
 	private bool canRotateCamera = false;
 	public bool CanRotateCamera
 	{
-		get { return !paintingSubcategoryObject.activeSelf || canRotateCamera; }
+		get { return !paintingSubcategoryObject.animationUIController.IsOpened || canRotateCamera; }
 		private set { canRotateCamera = value; }
 	}
 

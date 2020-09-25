@@ -11,8 +11,8 @@ public class SubcategoryUIOpener : MonoBehaviour
 		if (buttonIndex >= 0)
 		{
 			SubviewType subview = (SubviewType)buttonIndex;
-			var view = views.Find(x => x.type == subview).gameObject;
-			IngameUIManager.Instance.customizationViewUIController.OpenView(view, subview);
+			var view = views.Find(x => x.type == subview);
+			IngameUIManager.Instance.customizationViewUIController.OpenView(view.animationUIController, subview);
 		}
 	}	
 }

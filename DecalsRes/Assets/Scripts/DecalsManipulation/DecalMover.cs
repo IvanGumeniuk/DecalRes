@@ -1,5 +1,4 @@
 ﻿using PaintIn3D;
-using System.Collections;
 using UnityEngine;
 
 public class DecalMover : MonoBehaviour

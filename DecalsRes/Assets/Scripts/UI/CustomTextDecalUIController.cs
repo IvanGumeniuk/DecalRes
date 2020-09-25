@@ -15,7 +15,7 @@ public class CustomTextDecalUIController : MonoBehaviour
 	private DecalsUIController decalsUIController;
 	
 	[SerializeField] private int currentID;
-	private int selectedFontIndex = 0;
+	[SerializeField] private int selectedFontIndex = 0;
 
 	public bool IsAnyButtonEnabled
 	{
@@ -39,6 +39,8 @@ public class CustomTextDecalUIController : MonoBehaviour
 		{
 			fontCanvasGroups.Add(fontButtons[i].GetComponent<CanvasGroup>());
 		}
+
+		textDecalsIDs = new List<int>(SettingsManager.Instance.textDecalSettings.GetFontsIDs());
 	}
 
 	public void OnFontButtonClick(int fontIndex)
@@ -94,7 +96,7 @@ public class CustomTextDecalUIController : MonoBehaviour
 	public void HandleTextureCreating(int id, int fontID)
 	{
 		textDecalContoller.CreateNewTexture(id, fontID);
-		textDecalContoller.SetTextureToCamera(id);
+		textDecalContoller.SetTextureToCamera(id, fontID);
 	}
 
 
@@ -124,8 +126,8 @@ public class CustomTextDecalUIController : MonoBehaviour
 
     public void OnDecalChoosen(int id)
     {
-        textDecalContoller.SetTextureToCamera(id);
-		textDecalContoller.GetText(id, out int fintID, out string text);
+		textDecalContoller.GetText(id, out int fontID, out string text);
+        textDecalContoller.SetTextureToCamera(id, fontID);
 		inputField.text = text;
 		SetActiveInput(true);
 	}
