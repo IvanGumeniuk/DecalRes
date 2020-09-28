@@ -5,5 +5,8 @@ public enum DecalType
 {
 	None,
 	Sticker,
-	Text
+	Text,
+	Shape,
+	Logo,
+	Stripe
 }

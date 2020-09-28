@@ -55,10 +55,13 @@ public class CustomizationViewUIController : MonoBehaviour
 
 		if (openedViews.Count > 0)
 		{
-			bool disablePrevious = LastOpened == SubviewType.Stickers 
-				|| LastOpened == SubviewType.CustomPainting 
+			bool disablePrevious = LastOpened == SubviewType.Stickers
+				|| LastOpened == SubviewType.CustomPainting
 				|| LastOpened == SubviewType.CustomText
-				|| LastOpened == SubviewType.CustomizationCategory;
+				|| LastOpened == SubviewType.CustomizationCategory
+				|| LastOpened == SubviewType.Shapes
+				|| LastOpened == SubviewType.Logos
+				|| LastOpened == SubviewType.Stripes;
 
 			bool keepInHistory = LastOpened == SubviewType.CustomizationCategory;
 

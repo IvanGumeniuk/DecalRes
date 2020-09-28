@@ -94,10 +94,16 @@ public class OpenAnimationUIController : MonoBehaviour
             float percentage = timeSince / duration;
 
             var position = Vector2.Lerp(from, to, percentage);
-            
+
             // Check is not NAN
-            if(position.x == position.x)
-                target.anchoredPosition = Vector2.Lerp(from, to, percentage);
+            if (position.x == position.x)
+            {
+				target.anchoredPosition = Vector2.Lerp(from, to, percentage);
+			}
+			else
+			{
+				Debug.Log($"NAN");
+            }
 
             actionFinished = Time.time - timeActionStarted > duration;
             yield return null;
@@ -113,7 +119,7 @@ public class OpenAnimationUIController : MonoBehaviour
         {
             StopCoroutine(animationCoroutine);
             animationCoroutine = null;
-            IsOpened = !IsOpened;
+            //IsOpened = !IsOpened;
         }
     }
 }

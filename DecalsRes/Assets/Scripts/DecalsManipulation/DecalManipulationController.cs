@@ -137,13 +137,25 @@ public class DecalManipulationController : MonoBehaviour
 			reflectedDecal.SetPriority(priority);
 	}
 
-	public void SetTexture(int textureID)
+	public void SetTexture(int textureID, DecalType decalType)
 	{
 		decalTextureID = textureID;
-		p3DPaintDecalController.Texture = SettingsManager.Instance.stickerDecalSettings.GetTexture(decalTextureID);
-		
+		p3DPaintDecalController.Texture = GetTextureByType(decalTextureID, decalType);
+
 		if (Reflected)
-			reflectedDecal.SetTexture(decalTextureID);
+			reflectedDecal.SetTexture(decalTextureID, decalType);
+	}
+
+	private Texture GetTextureByType(int textureID, DecalType decalType)
+	{
+		switch (decalType)
+		{
+			case DecalType.Sticker: return SettingsManager.Instance.stickerDecalSettings.GetTexture(decalTextureID);
+			case DecalType.Shape: return SettingsManager.Instance.shapeDecalSettings.GetTexture(decalTextureID);
+			case DecalType.Logo: return SettingsManager.Instance.logoDecalSettings.GetTexture(decalTextureID);
+			case DecalType.Stripe: return SettingsManager.Instance.stripeDecalSettings.GetTexture(decalTextureID);
+			default: return null;
+		}
 	}
 
 	public void SetTexture(Texture texture)
@@ -395,7 +407,7 @@ public class DecalManipulationController : MonoBehaviour
 				decal.SetTexture(texture);
 			}
 			else
-				decal.SetTexture(deserialized.decalTextureID);
+				decal.SetTexture(deserialized.decalTextureID, deserialized.decalType);
 
 			decal.SetPriority(deserialized.decalPriority);
 

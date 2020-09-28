@@ -7,18 +7,38 @@ public class DecalsUIController : MonoBehaviour
     public Action<int, int, string> OnTextDecalCreated;           // <decalID, fontID, decalText>
 
     public StickerDecalUIController stickerDecalUIController;
+    public ShapeDecalUIController shapeDecalUIController;
+    public LogoDecalUIController logoDecalUIController;
+    public StripeDecalUIController stripeDecalUIController;
     public CustomPaintingDecalUIController paintingDecalUIController;
     public CustomTextDecalUIController textDecalUIController;
 
     public SubcategoryUIView customizationManipulatorView;
     public SubcategoryUIView stickerDecalsView;
+    public SubcategoryUIView shapesDecalsView;
+    public SubcategoryUIView logosDecalsView;
+    public SubcategoryUIView stripesDecalsView;
     public SubcategoryUIView customTextDecalsView;
 
     // Unique ID for each sticker. 
     [SerializeField] private int decalID = 0;
     public int ID { get { return decalID; } }
 
-    public bool DecalIsChoosing { get { return stickerDecalUIController.IsAnyButtonEnabled || textDecalUIController.IsAnyButtonEnabled; } }
+    public bool DecalIsChoosing
+    { 
+        get 
+        {
+            bool res = 
+             stickerDecalUIController.IsAnyButtonEnabled
+                || textDecalUIController.IsAnyButtonEnabled
+                || shapeDecalUIController.IsAnyButtonEnabled
+                || logoDecalUIController.IsAnyButtonEnabled
+                || stripeDecalUIController.IsAnyButtonEnabled;
+            Debug.Log($"DecalIsChoosing {res}");
+
+            return res;
+        } 
+    }
 
 
 	private void Start()
@@ -74,6 +94,9 @@ public class DecalsUIController : MonoBehaviour
     public void DeselectButtons()
 	{
         stickerDecalUIController.DeselectButtons();
+        shapeDecalUIController.DeselectButtons();
+        logoDecalUIController.DeselectButtons();
+        stripeDecalUIController.DeselectButtons();
         textDecalUIController.DeselectButtons();
     }
 
@@ -85,6 +108,7 @@ public class DecalsUIController : MonoBehaviour
     // New decal chosen or layer item selected 
     public void DecalChoosen(DecalType type, int id)
 	{
+		Debug.Log($"DecalChoosen {type} {id}");
 		switch (type)
 		{
 			case DecalType.None:
@@ -95,6 +119,27 @@ public class DecalsUIController : MonoBehaviour
 			case DecalType.Sticker:
                 {
                     IngameUIManager.Instance.customizationViewUIController.OpenView(stickerDecalsView.animationUIController, SubviewType.Stickers);
+                    textDecalUIController.SetActiveInput(false);
+
+                    break;
+                }
+            case DecalType.Shape:
+                {
+                    IngameUIManager.Instance.customizationViewUIController.OpenView(shapesDecalsView.animationUIController, SubviewType.Shapes);
+                    textDecalUIController.SetActiveInput(false);
+
+                    break;
+                }
+            case DecalType.Logo:
+                {
+                    IngameUIManager.Instance.customizationViewUIController.OpenView(logosDecalsView.animationUIController, SubviewType.Logos);
+                    textDecalUIController.SetActiveInput(false);
+
+                    break;
+                }
+            case DecalType.Stripe:
+                {
+                    IngameUIManager.Instance.customizationViewUIController.OpenView(stripesDecalsView.animationUIController, SubviewType.Stripes);
                     textDecalUIController.SetActiveInput(false);
 
                     break;

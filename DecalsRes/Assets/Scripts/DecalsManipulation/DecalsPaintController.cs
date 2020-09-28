@@ -198,6 +198,7 @@ public class DecalsPaintController : MonoBehaviour
 		if (currentActive != null && !decals.Contains(currentActive))
 		{
 			OnConfirmDecalCreation(false);
+			Debug.Log($"OnNewDecalChosen {decalType} {textureID}  Return");
 			return;
 		}
 
@@ -206,7 +207,7 @@ public class DecalsPaintController : MonoBehaviour
 			currentActive = Instantiate(prefab, decalHolders.dynamicDecalsHolder);
 			currentActive.SetIdentifier(decalType, id);
 			currentActive.SetPriority(maxPriority + 1);
-			
+
 			cameraController.SetPivot(currentActive.HitPoint, true);
 			manipulatorUIController.floatingUIController.SetTarget(currentActive.HitPoint);
 
@@ -217,11 +218,15 @@ public class DecalsPaintController : MonoBehaviour
 		}
 
 		decalUIController.DecalChoosen(decalType, id);
-		
-		if(decalType == DecalType.Sticker)
-			currentActive.SetTexture(textureID);
-		else
+
+		if (decalType == DecalType.None || decalType == DecalType.Text)
+		{
 			currentActive.SetTexture(texture);
+		}
+		else
+		{
+			currentActive.SetTexture(textureID, decalType);
+		}
 	}
 
 	private void ChangeCurrent(int newItemID)

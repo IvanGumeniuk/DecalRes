@@ -103,7 +103,8 @@ public class DecalLayersUIController : MonoBehaviour
         }
 
         // -1 - is there no selected layer items 
-        OnLayerItemSelected?.Invoke(-1);
+        if(IsLayerSelected)
+            OnLayerItemSelected?.Invoke(-1);
     }
 
     public void OnItemDrag(DecalLayerItem item)

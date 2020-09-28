@@ -10,9 +10,16 @@ public class CustomTextDecalUIController : MonoBehaviour
 	public List<Button> fontButtons = new List<Button>();
 	private List<CanvasGroup> fontCanvasGroups = new List<CanvasGroup>();
 
+	[SerializeField] private Button showInputFieldButton;
+	[SerializeField] private Button cancelInputButton;
+	[SerializeField] private Button confirmInputButton;
+
+	[SerializeField] private OpenAnimationUIController inputViewAnimationController;
+
 	[SerializeField] private List<int> textDecalsIDs = new List<int>();
 
 	private DecalsUIController decalsUIController;
+
 	
 	[SerializeField] private int currentID;
 	[SerializeField] private int selectedFontIndex = 0;
@@ -41,6 +48,17 @@ public class CustomTextDecalUIController : MonoBehaviour
 		}
 
 		textDecalsIDs = new List<int>(SettingsManager.Instance.textDecalSettings.GetFontsIDs());
+
+		showInputFieldButton.onClick.AddListener(OnShowInputFieldButtonPressed);
+		confirmInputButton.onClick.AddListener(OnConfirmInputButtonPressed);
+		cancelInputButton.onClick.AddListener(OnCancelInputButtonPressed);
+	}
+
+	private void OnDestroy()
+	{
+		showInputFieldButton.onClick.RemoveListener(OnShowInputFieldButtonPressed);
+		confirmInputButton.onClick.RemoveListener(OnConfirmInputButtonPressed);
+		cancelInputButton.onClick.RemoveListener(OnCancelInputButtonPressed);
 	}
 
 	public void OnFontButtonClick(int fontIndex)
@@ -70,9 +88,25 @@ public class CustomTextDecalUIController : MonoBehaviour
 		}
 	}
 
+	private void OnShowInputFieldButtonPressed()
+	{
+		inputViewAnimationController.Open();
+	}
+
+	private void OnConfirmInputButtonPressed()
+	{
+		inputViewAnimationController.Close();
+		textDecalContoller.SetText(inputField.text);
+	}
+
+	private void OnCancelInputButtonPressed()
+	{
+		inputViewAnimationController.Close();
+	}
+
 	public void SetActiveInput(bool active)
 	{
-		inputField.gameObject.SetActive(active);
+		showInputFieldButton.gameObject.SetActive(active);
 	}
 
     public void OnInputTextChanged(string text)
@@ -112,7 +146,7 @@ public class CustomTextDecalUIController : MonoBehaviour
 
 	public void OnDecalCreated(int id)
 	{
-		if (inputField.gameObject.activeSelf)
+		if (showInputFieldButton.gameObject.activeSelf)
 		{
 			textDecalContoller.StoreDecalText(id);
 			SetActiveInput(false);
