@@ -59,7 +59,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
     private DecalsUIController decalsUIController;
 
-    private bool StickerIsChosen { get { return decalsUIController.DecalIsChoosing; } }
+    private bool DecalIsChosen { get { return decalsUIController.DecalIsChoosing; } }
 
 
 	private void Start()
@@ -69,7 +69,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
 	public void OnConfirmButtonClick()
 	{
-        if (StickerIsChosen)
+        if (DecalIsChosen)
         {
             decalsUIController.DeselectButtons();
             OnConfirmDecalPainting?.Invoke(true);
@@ -81,7 +81,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
     public void OnCancelButtonClick()
     {
-        if (StickerIsChosen)
+        if (DecalIsChosen)
         {
             OnConfirmDecalPainting?.Invoke(false);
             return;

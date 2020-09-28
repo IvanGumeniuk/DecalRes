@@ -167,9 +167,10 @@ public class DecalsPaintController : MonoBehaviour
 			currentActive.SetParent(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder);
 			decalLayersUIController.CreateLayerElement(currentActive.decalType, currentActive.id, currentActive.DecalTexture);
 			colorPanelUIController.SetColorToPanel(currentActive.decalColorData);
+			cameraController.ResetToDefaultPosition();
 		}
 		else
-		{
+		{			
 			if (decals.Contains(currentActive))
 				decals.Remove(currentActive);
 
@@ -177,7 +178,7 @@ public class DecalsPaintController : MonoBehaviour
 		}
 
         currentActive = null;
-		cameraController.ResetToDefaultPosition();
+		//cameraController.ResetToDefaultPosition();
 		manipulatorUIController.floatingUIController.SetTarget(null);
 		colorPanelUIController.ResetValues();
 
@@ -195,11 +196,11 @@ public class DecalsPaintController : MonoBehaviour
 
 	private void OnNewDecalChosen(DecalType decalType, int id, int textureID, Texture texture)
 	{
-		if (currentActive != null && !decals.Contains(currentActive))
+		if (currentActive != null && !decals.Contains(currentActive) && decalType != currentActive.decalType)
 		{
 			OnConfirmDecalCreation(false);
 			Debug.Log($"OnNewDecalChosen {decalType} {textureID}  Return");
-			return;
+			//return;
 		}
 
 		if (currentActive == null)
@@ -373,25 +374,34 @@ public class DecalsPaintController : MonoBehaviour
 
 		if (currentActive.FollowsCamera)
 		{
-			currentActive.StopFollowCamera(cameraController.Pitch, cameraController.Yaw);
-			currentActive.FollowsCamera = false;
-
-			currentActive.SetParent(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder);
-			cameraController.SetPivot(null);
+			StopFollowCamera();
 		}
 		else
 		{
-			cameraController.SetPivot(currentActive.HitPoint);
-
-			currentActive.StartFollowCamera(out float pitch, out float yaw);
-			currentActive.FollowsCamera = true;
-
-			cameraController.SetCameraPosition(pitch, yaw);
-
-			StartCoroutine(SetParentWithDelay(decalHolders.dynamicDecalsHolder, decalHolders.dynamicReflectedDecalsHolder));
+			StartFollowCamera();
 		}
 	}
 
+	private void StartFollowCamera()
+	{
+		//cameraController.SetPivot(currentActive.HitPoint);
+
+		currentActive.StartFollowCamera(out float pitch, out float yaw);
+		currentActive.FollowsCamera = true;
+
+		cameraController.SetCameraPosition(pitch, yaw);
+
+		StartCoroutine(SetParentWithDelay(decalHolders.dynamicDecalsHolder, decalHolders.dynamicReflectedDecalsHolder));
+	}
+
+	private void StopFollowCamera()
+	{
+		currentActive.StopFollowCamera(cameraController.Pitch, cameraController.Yaw);
+		currentActive.FollowsCamera = false;
+
+		currentActive.SetParent(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder);
+		//cameraController.SetPivot(null);
+	}
 
 	private void OnStartMoving()
 	{

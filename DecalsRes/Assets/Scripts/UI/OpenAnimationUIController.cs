@@ -100,14 +100,12 @@ public class OpenAnimationUIController : MonoBehaviour
             {
 				target.anchoredPosition = Vector2.Lerp(from, to, percentage);
 			}
-			else
-			{
-				Debug.Log($"NAN");
-            }
 
             actionFinished = Time.time - timeActionStarted > duration;
             yield return null;
         }
+
+        isAnimating = false;
 
         IsOpened = !IsOpened;
         animationCoroutine = null;

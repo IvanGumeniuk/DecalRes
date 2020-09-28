@@ -108,7 +108,6 @@ public class DecalsUIController : MonoBehaviour
     // New decal chosen or layer item selected 
     public void DecalChoosen(DecalType type, int id)
 	{
-		Debug.Log($"DecalChoosen {type} {id}");
 		switch (type)
 		{
 			case DecalType.None:

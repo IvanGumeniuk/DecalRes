@@ -121,11 +121,9 @@ MonoBehaviour:
   followCameraStoredYaw: 0
   p3DHitBetweenController: {fileID: 4280242848850410133}
   p3DPaintDecalController: {fileID: 4280242848850410136}
-  paintableMaterialController: {fileID: 0}
   decalRotator: {fileID: 4280242848850410134}
   decalScaler: {fileID: 4280242848850410135}
   decalMover: {fileID: 4280242848850410132}
-  decalColorData: {fileID: 0}
   reflectedDecal: {fileID: 0}
   targetlayers:
     serializedVersion: 2
@@ -226,7 +224,7 @@ MonoBehaviour:
   scaleSpeed: 0.003
   currentScale: 0
   startScale: 1
-  scaleClamp: {x: 0.05, y: 5}
+  scaleClamp: {x: 0.05, y: 11}
 --- !u!114 &4280242848850410134
 MonoBehaviour:
   m_ObjectHideFlags: 0
