@@ -34,7 +34,6 @@ public class DecalsUIController : MonoBehaviour
                 || shapeDecalUIController.IsAnyButtonEnabled
                 || logoDecalUIController.IsAnyButtonEnabled
                 || stripeDecalUIController.IsAnyButtonEnabled;
-            Debug.Log($"DecalIsChoosing {res}");
 
             return res;
         } 

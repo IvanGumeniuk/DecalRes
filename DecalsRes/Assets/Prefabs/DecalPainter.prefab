@@ -193,7 +193,7 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 0}
   opacity: 1
   angle: 0
-  scale: {x: 1, y: 1, z: 2}
+  scale: {x: 1, y: 1, z: 5}
   radius: 0.3
   hardness: 5
   wrapping: 1

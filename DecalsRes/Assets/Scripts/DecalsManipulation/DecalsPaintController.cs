@@ -167,7 +167,7 @@ public class DecalsPaintController : MonoBehaviour
 			currentActive.SetParent(decalHolders.staticDecalsHolder, decalHolders.staticDecalsHolder);
 			decalLayersUIController.CreateLayerElement(currentActive.decalType, currentActive.id, currentActive.DecalTexture);
 			colorPanelUIController.SetColorToPanel(currentActive.decalColorData);
-			cameraController.ResetToDefaultPosition();
+			//cameraController.ResetToDefaultPosition();
 		}
 		else
 		{			
@@ -178,7 +178,7 @@ public class DecalsPaintController : MonoBehaviour
 		}
 
         currentActive = null;
-		//cameraController.ResetToDefaultPosition();
+		cameraController.ResetToDefaultPosition();
 		manipulatorUIController.floatingUIController.SetTarget(null);
 		colorPanelUIController.ResetValues();
 
@@ -431,8 +431,12 @@ public class DecalsPaintController : MonoBehaviour
 	{
 		isMoving = false;
 		currentActive.FinishMoving(currentActive.FollowsCamera);
-
-		cameraController.UpdateCameraPosition();
+		
+		// Need a frames delay to get right pivot position data
+		if(!currentActive.FollowsCamera)
+			cameraController.UpdateCameraPosition(true);
+		else
+			cameraController.UpdateCameraPosition();
 	}
 
 	private void OnStartRotationAndScaling()
@@ -521,9 +525,11 @@ public class DecalsPaintController : MonoBehaviour
 	private void OnBackButtonClicked()
 	{
 		if (currentActive != null && !decals.Contains(currentActive))
-		{
+		{	
 			OnConfirmDecalCreation(false);
 		}
+
+		IngameUIManager.Instance.decalLayers.DeselectItems();
 	}
 
 	// Use it to store data of vehicle locally

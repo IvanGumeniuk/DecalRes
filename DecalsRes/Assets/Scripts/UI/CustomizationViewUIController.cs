@@ -21,6 +21,7 @@ public class CustomizationViewUIController : MonoBehaviour
 	public SubviewType LastOpened { get { return openedViewTypes.Count > 0 ? openedViewTypes[openedViewTypes.Count - 1] : SubviewType.None; } }
 
 	public SubcategoryUIView categoryUI;
+	public SubcategoryUIView categoryDecals;
 
 	private void Awake()
 	{
@@ -41,7 +42,7 @@ public class CustomizationViewUIController : MonoBehaviour
 	private void OnCustomizationButtonPressed()
 	{
 		OpenView(categoryUI.animationUIController, SubviewType.CustomizationCategory);
-		IngameUIManager.Instance.decalLayers.gameObject.SetActive(true);
+		
 		customizatonButton.interactable = false;
 		backButton.gameObject.SetActive(true);
 	}
@@ -51,6 +52,11 @@ public class CustomizationViewUIController : MonoBehaviour
 		if (view == null || (LastOpened == subviewType && LastOpened != SubviewType.None))
 		{
 			return;
+		}
+
+		if(subviewType == SubviewType.Decals)
+		{
+			IngameUIManager.Instance.decalLayers.gameObject.SetActive(true);
 		}
 
 		if (openedViews.Count > 0)
@@ -94,6 +100,11 @@ public class CustomizationViewUIController : MonoBehaviour
 
 			OnViewOpened?.Invoke(openedViewTypes[openedViewTypes.Count - 1], false);
 
+			if(openedViewTypes[openedViewTypes.Count - 1] == SubviewType.Decals)
+			{
+				IngameUIManager.Instance.decalLayers.gameObject.SetActive(false);
+			}
+
 			openedViews.RemoveAt(openedViews.Count - 1);
 			openedViewTypes.RemoveAt(openedViewTypes.Count - 1);
 
@@ -102,7 +113,6 @@ public class CustomizationViewUIController : MonoBehaviour
 			else
 			{
 				customizatonButton.interactable = true;
-				IngameUIManager.Instance.decalLayers.gameObject.SetActive(false);
 				backButton.gameObject.SetActive(false);
 			}
 		}
@@ -115,6 +125,10 @@ public class CustomizationViewUIController : MonoBehaviour
 
 	private void OnLoadPressed()
 	{
+		if (!openedViewTypes.Contains(SubviewType.Decals))
+		{
+			OpenView(categoryDecals.animationUIController, SubviewType.Decals);
+		}
 		OnLoadClicked?.Invoke();
 	}
 }

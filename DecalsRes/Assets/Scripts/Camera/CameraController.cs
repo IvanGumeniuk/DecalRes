@@ -152,7 +152,6 @@ public class CameraController : MonoBehaviour
 	private void ChangeCarSide()
 	{
         Index++;
-        manipulatorView.SetCameraText($"{carSide}");
         transform.position = defaultPivot;
         SetCameraPosition(cameraPositions[Index].vertical, cameraPositions[Index].horizontal);
         UpdateCameraPosition(true);

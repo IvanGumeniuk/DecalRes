@@ -96,15 +96,15 @@ public class DecalLayersUIController : MonoBehaviour
     }
 
     public void DeselectItems()
-	{
+    { 
+        // -1 - is there no selected layer items 
+        if (IsLayerSelected)
+            OnLayerItemSelected?.Invoke(-1);
+      
         foreach (var layerItem in layerItems)
         {
             layerItem.Selected = false;   
         }
-
-        // -1 - is there no selected layer items 
-        if(IsLayerSelected)
-            OnLayerItemSelected?.Invoke(-1);
     }
 
     public void OnItemDrag(DecalLayerItem item)
@@ -138,7 +138,9 @@ public class DecalLayersUIController : MonoBehaviour
         for (int i = 0; i < layerItems.Count; i++)
         {
             layerItems[i].transform.SetSiblingIndex(layerItems[i].Priority);
-            priorities.Add(layerItems[i].ID, layerItems[i].Priority);
+            
+            if(!priorities.ContainsKey(layerItems[i].ID))
+                priorities.Add(layerItems[i].ID, layerItems[i].Priority);
         }
 
         OnLayerItemsPrioritiesChanged?.Invoke(priorities);

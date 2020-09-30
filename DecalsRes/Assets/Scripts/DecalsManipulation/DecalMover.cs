@@ -51,6 +51,14 @@ public class DecalMover : MonoBehaviour
 		}
 	}
 
+	private void OnDrawGizmos()
+	{
+		if (Application.isPlaying)
+		{
+			Gizmos.DrawSphere(transformStartMovingPosition, 0.2f);
+		}
+	}
+
 	public void RevertToDefault()
 	{
 		transform.position = transformDefaultPosition;

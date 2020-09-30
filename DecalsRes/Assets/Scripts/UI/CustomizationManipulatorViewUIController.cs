@@ -58,6 +58,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
     public Vector3 difference;
 
     private DecalsUIController decalsUIController;
+    private DecalLayersUIController decalLayersUIController;
 
     private bool DecalIsChosen { get { return decalsUIController.DecalIsChoosing; } }
 
@@ -65,6 +66,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 	private void Start()
 	{
         decalsUIController = IngameUIManager.Instance.decalsController;
+        decalLayersUIController = IngameUIManager.Instance.decalLayers;
     }
 
 	public void OnConfirmButtonClick()
@@ -81,7 +83,7 @@ public class CustomizationManipulatorViewUIController : MonoBehaviour
 
     public void OnCancelButtonClick()
     {
-        if (DecalIsChosen)
+        if (DecalIsChosen /*|| decalLayersUIController.IsLayerSelected*/)
         {
             OnConfirmDecalPainting?.Invoke(false);
             return;
